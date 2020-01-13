@@ -1,0 +1,9 @@
+﻿resName,uiText,statement,args
+string,string,string,string
+Feather,羽毛,增加跳跃次数,1
+FireRing,火环,攻击概率造成火焰Buff,0.1
+Guitar,吉他,攻击概率造成电刀效果,0.1
+IceRing,冰环,攻击概率造成冰冻效果,0.1
+Seed,吸血种子,造成伤害永久提高血量，上限100,100
+Sickle,吸血镰刀,攻击概率吸血,"2,0.2"
+SpiritBottle,精灵瓶,杀死敌方单位造成爆炸,1.3

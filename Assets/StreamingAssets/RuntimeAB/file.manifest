@@ -1,0 +1,25 @@
+ManifestFileVersion: 0
+CRC: 1818961442
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 8338b76cc5742d2031f797866bc6f614
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5ad585dd02dfb5016c0dad519eab8f49
+HashAppended: 0
+ClassTypes:
+- Class: 49
+  Script: {instanceID: 0}
+Assets:
+- Assets/TestAB/File/EngineerRankData.csv
+- Assets/TestAB/File/BossData.csv
+- Assets/TestAB/File/ItemData.csv
+- Assets/TestAB/File/EnemyData.csv
+- Assets/TestAB/File/PlaneData.csv
+- Assets/TestAB/File/CharacterData.CSV
+- Assets/TestAB/File/SkillData.csv
+- Assets/TestAB/File/SummonData.csv
+- Assets/TestAB/File/EliteData.csv
+- Assets/TestAB/File/RobotRankData.csv
+Dependencies: []

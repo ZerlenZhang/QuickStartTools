@@ -1,0 +1,8 @@
+﻿enemyName,hp,attack,skill_1,skill_2,attackRadius,detectRadius,dropExp,dropCoin
+string,int,int,int,int,float,float,int,int
+LittleBeetle,80,10,101,102,2,50,20,5
+LittleLemurian,100,10,101,102,80,100,20,5
+StoneMan,150,20,101,103,100,100,30,10
+Bison,150,40,101,104,60,60,40,10
+LittleWisp,80,10,101,105,20,100,20,5
+VagrantChild,200,25,101,106,5,5,0,0

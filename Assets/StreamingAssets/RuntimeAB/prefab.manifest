@@ -1,0 +1,27 @@
+ManifestFileVersion: 0
+CRC: 1068259284
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: a357c9c1b4ddb4bc34df011b2643f844
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 2c741a59cff4c34c27e0ae4513a21d7f
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+Assets:
+- Assets/TestAB/Prefab/TestFolder/TestImage.prefab
+Dependencies:
+- F:/Projects/unity/ReadyGamerOne/Assets/StreamingAssets/RuntimeAB/texture

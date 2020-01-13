@@ -1,0 +1,4 @@
+﻿resName,uiText,iconName,hp,attack,attackRadius,detectRadius
+string,string,string,int,int,float,float
+EngiMine,蜘蛛地雷,EngiMineIcon,30,20,3,10
+EngiTurr,工程师机枪塔,EngiTurrIcon,200,15,80,80

@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 3485025080
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: audio
+      Dependencies: {}
+    Info_1:
+      Name: file
+      Dependencies: {}
+    Info_2:
+      Name: prefab
+      Dependencies:
+        Dependency_0: texture
+    Info_3:
+      Name: texture
+      Dependencies: {}
