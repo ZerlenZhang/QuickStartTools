@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 1068259284
+CRC: 888036477
 Hashes:
   AssetFileHash:
     serializedVersion: 2
@@ -22,6 +22,6 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
-- Assets/TestAB/Prefab/TestFolder/TestImage.prefab
+- Assets/Resources/Prefab/TestFolder/TestImage.prefab
 Dependencies:
-- F:/Projects/unity/ReadyGamerOne/Assets/StreamingAssets/RuntimeAB/texture
+- F:/Projects/unity/QuickStartTools/Assets/StreamingAssets/RuntimeAB/texture

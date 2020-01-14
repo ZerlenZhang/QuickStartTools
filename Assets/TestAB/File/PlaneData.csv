@@ -1,5 +1,0 @@
-﻿resName,hp,attack,speed,attackRadius,detectRadius
-string,int,int,int,float,float
-CurePlane,300,10,10,50,75
-FlamePlane,500,25,8,30,50
-KingPlane,2000,40,15,60,90

@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 1818961442
+CRC: 711145007
 Hashes:
   AssetFileHash:
     serializedVersion: 2
@@ -12,14 +12,14 @@ ClassTypes:
 - Class: 49
   Script: {instanceID: 0}
 Assets:
-- Assets/TestAB/File/EngineerRankData.csv
-- Assets/TestAB/File/BossData.csv
-- Assets/TestAB/File/ItemData.csv
-- Assets/TestAB/File/EnemyData.csv
-- Assets/TestAB/File/PlaneData.csv
-- Assets/TestAB/File/CharacterData.CSV
-- Assets/TestAB/File/SkillData.csv
-- Assets/TestAB/File/SummonData.csv
-- Assets/TestAB/File/EliteData.csv
-- Assets/TestAB/File/RobotRankData.csv
+- Assets/Resources/File/EngineerRankData.csv
+- Assets/Resources/File/BossData.csv
+- Assets/Resources/File/ItemData.csv
+- Assets/Resources/File/EnemyData.csv
+- Assets/Resources/File/PlaneData.csv
+- Assets/Resources/File/CharacterData.CSV
+- Assets/Resources/File/SkillData.csv
+- Assets/Resources/File/SummonData.csv
+- Assets/Resources/File/EliteData.csv
+- Assets/Resources/File/RobotRankData.csv
 Dependencies: []

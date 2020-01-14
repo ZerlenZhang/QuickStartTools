@@ -94,12 +94,12 @@ namespace ReadyGamerOne.Script
         /// 播放指定名字的背景音乐
         /// </summary>
         /// <param CharacterName="name"></param>
-        public void PlayBgm(string audioPath)
+        public void PlayBgm(string audioName,string bundleKey=null)
         {
             if (!enableBgmAudio)
                 return;
 
-            var clip = ResourceMgr.GetSourceFromResources<AudioClip>(audioPath);
+            var clip = ResourceMgr.GetAsset<AudioClip>(audioName,bundleKey ?? OriginBundleKey.Audio);
             if (clip == null)
             {
                 Debug.Log("音效获取失败：" + name);
@@ -116,12 +116,12 @@ namespace ReadyGamerOne.Script
         /// 播放指定名字音效
         /// </summary>
         /// <param CharacterName="name"></param>
-        public void PlayEffect(string audioPath)
+        public void PlayEffect(string audioName,string bundleKey=null)
         {
             if (!enableEffectAudio)
                 return;
 
-            var clip = ResourceMgr.GetSourceFromResources<AudioClip>(audioPath);
+            var clip = ResourceMgr.GetAsset<AudioClip>(audioName,bundleKey ?? OriginBundleKey.Audio );
 
             if (clip == null)
             {
@@ -154,9 +154,10 @@ namespace ReadyGamerOne.Script
         /// </summary>
         /// <param CharacterName="audioName"></param>
         /// <param CharacterName="position"></param>
-        public void PlayEffect(string audioPath, Vector3 position)
+        public void PlayEffect(string audioPath, Vector3 position,string bundleKey=null)
         {
-            AudioSource.PlayClipAtPoint(ResourceMgr.GetSourceFromResources<AudioClip>(audioPath), position);
+            AudioSource.PlayClipAtPoint(ResourceMgr.GetAsset<AudioClip>(audioPath,
+                bundleKey ?? OriginBundleKey.Audio), position);
         }
     }
 }

@@ -142,7 +142,7 @@ namespace ReadyGamerOne.Data
 				fileLoadPath = "ClassFile/" + type.Name;
 			}
 			
-			string getString = ResourceMgr.GetSourceFromResources<TextAsset>(fileLoadPath).text;
+			string getString = ResourceMgr.GetAsset<TextAsset>(fileLoadPath,OriginBundleKey.File).text;
 
 			var csr = new CsvReaderByString (getString);
 

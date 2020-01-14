@@ -1,13 +1,13 @@
+using Preview.Const;
 using ReadyGamerOne.Script;
 using ReadyGamerOne.MemorySystem;
-using Preview.Const;
 namespace Preview.Script
 {
 	public partial class PreviewMgr : AbstractGameMgr<PreviewMgr>
 	{
-		private IHotUpdatePath _pathData;
+		protected override IResourceLoader ResourceLoader => AssetBundleResourceLoader.Instance;
 		protected override IHotUpdatePath PathData => HotUpdatePathData.Instance;
-		protected override IOriginPathData OriginBundleData => OriginBundleConst.Instance;
+		protected override IOriginAssetBundleUtil OriginBundleData => OriginBundleUtil.Instance;
 		partial void OnSafeAwake();
 		protected override void Awake()
 		{

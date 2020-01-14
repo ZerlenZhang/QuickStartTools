@@ -206,6 +206,8 @@ namespace ReadyGamerOne.Utility
             Dictionary<string, string> content)
         {
             var constClassFullPath = generateDir + "/"+className+".cs";
+            if (!Directory.Exists(generateDir))
+                Directory.CreateDirectory(generateDir);
             if(File.Exists(constClassFullPath))
                 File.Delete(constClassFullPath);
             var stream = new StreamWriter(constClassFullPath);

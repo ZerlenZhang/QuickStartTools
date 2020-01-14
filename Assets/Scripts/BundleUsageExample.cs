@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Preview.Const;
 using ReadyGamerOne.MemorySystem;
+using ReadyGamerOne.Script;
 using UnityEngine;
 using UnityEngine.UI;
 using OriginBundleKey = Preview.Const.OriginBundleKey;
@@ -21,10 +21,8 @@ public class BundleUsageExample : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
         {
-            var obj = ResourceMgr.GetAssetFromBundle<GameObject>(
-                OriginBundleKey.Prefab, 
-                PrefabName.TestImage);
-            
+            var obj = ResourceMgr.GetAsset<GameObject>(OtherResName.TestImage, OriginBundleKey.Prefab);
+            AudioMgr.Instance.PlayBgm(OtherResName.Scene_1);
             var itemObj = Instantiate(obj, transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
         }
@@ -39,7 +37,7 @@ public class BundleUsageExample : MonoBehaviour
         if (GUILayout.Button("LoadStuff"))
         {
             StartCoroutine(
-                ResourceMgr.GetAssetFromBundleAsync<GameObject>(
+                ResourceMgr.GetAssetAsync<GameObject>(
                     ObjectsUsage[0].BundleNames,
                     ObjectsUsage[0].ObjectName,
                     obj => Instantiate(obj)));

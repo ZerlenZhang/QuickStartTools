@@ -1,3 +1,4 @@
+using ReadyGamerOne.MemorySystem;
 using ReadyGamerOne.Script;
 using ReadyGamerOne.View.AssetUi;
 
@@ -19,5 +20,7 @@ namespace ScrptableTest.Scripts
         {
             PanelAssetMgr.PushPanel(PanelUiAsset);
         }
+
+        protected override IResourceLoader ResourceLoader => ResourcesResourceLoader.Instance;
     }
 }

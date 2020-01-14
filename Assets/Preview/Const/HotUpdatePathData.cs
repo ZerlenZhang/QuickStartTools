@@ -27,17 +27,19 @@ namespace Preview.Const
 	{
 		public const string Audio = @"Audio";
 		public const string File = @"File";
+		public const string GlobalAssets = @"GlobalAssets";
 		public const string Prefab = @"Prefab";
 		public const string Texture = @"Texture";
 	}
 
-	public class OriginBundleConst : OriginBundleConst<OriginBundleConst>
+	public class OriginBundleUtil : OriginBundleUtil<OriginBundleUtil>
 	{
 		private Dictionary<string,string> _keyToName = new Dictionary<string,string>
 		{
 			{"Self" , @"self"},
 			{"Audio" , @"audio"},
 			{"File" , @"file"},
+			{"GlobalAssets" , @"globalassets"},
 			{"Prefab" , @"prefab"},
 			{"Texture" , @"texture"},
 		};
@@ -47,6 +49,7 @@ namespace Preview.Const
 			{"Self" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"self")},
 			{"Audio" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"audio")},
 			{"File" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"file")},
+			{"GlobalAssets" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"globalassets")},
 			{"Prefab" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"prefab")},
 			{"Texture" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"texture")},
 		};
@@ -56,6 +59,7 @@ namespace Preview.Const
 			{@"self" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"self")},
 			{@"audio" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"audio")},
 			{@"file" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"file")},
+			{@"globalassets" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"globalassets")},
 			{@"prefab" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"prefab")},
 			{@"texture" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"texture")},
 		};

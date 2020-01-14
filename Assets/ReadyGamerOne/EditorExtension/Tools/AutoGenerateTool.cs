@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using FileUtil = ReadyGamerOne.Utility.FileUtil;
 using ReadyGamerOne.Global;
+using ReadyGamerOne.MemorySystem;
 using ReadyGamerOne.Utility;
 using ReadyGamerOne.View;
 using UnityEditor;
@@ -25,8 +26,8 @@ namespace ReadyGamerOne.EditorExtension
         }
 
 #if UNITY_EDITOR
-        private static List<string> autoClassName = new List<string>();
         private static string Title = "快速启动工具";
+        private static List<string> autoClassName = new List<string>();
         private static Dictionary<string, string> otherResPathDic = new Dictionary<string, string>();
         private static Dictionary<string, string> otherResFileNameDic = new Dictionary<string, string>();
 
@@ -42,6 +43,7 @@ namespace ReadyGamerOne.EditorExtension
         private static bool createMessage = false;
         private static bool createSceneNameClass = false;
         private static bool createPathDataClass = false;
+        private static ResourceManagerType _resourceManagerType;
 
 
         static void OnToolsGUI(string rootNs, string viewNs, string constNs, string dataNs, string autoDir,
@@ -65,8 +67,12 @@ namespace ReadyGamerOne.EditorExtension
 
             createGameMgr = EditorGUILayout.Toggle("是否生成GameMgr", createGameMgr);
             if (createGameMgr)
+            {
+                _resourceManagerType = (ResourceManagerType) EditorGUILayout.EnumPopup("资源管理类型", _resourceManagerType);
                 EditorGUILayout.LabelField("自动生成" + rootNs + "Mgr文件路径",
                     Application.dataPath + "/" + rootNs + "/" + scriptNs);
+                
+            }
             EditorGUILayout.Space();
 
             foldMoreCreate = EditorGUILayout.Foldout(foldMoreCreate, "更多生成");
@@ -107,78 +113,78 @@ namespace ReadyGamerOne.EditorExtension
                 #endregion
 
 
-                #region 遍历Resources生成常量文件
-
-                autoClassName.Clear();
-                otherResPathDic.Clear();
-                otherResFileNameDic.Clear();
-                allResPathDic.Clear();
-                allResFileNameDic.Clear();
-
-
-                foreach (var fullName in Directory.GetFileSystemEntries(resourceDir))
-                {
-                    Debug.Log(fullName);
-                    if (Directory.Exists(fullName))
-                    {
-                        //如果是文件夹
-                        OprateDir(new DirectoryInfo(fullName), rootNs, constNs, autoDir);
-                    }
-                    else
-                    {
-                        //是文件
-                        OprateFile(new FileInfo(fullName));
-                    }
-                }
-
-                //生成其他常量文件
-                if (otherResPathDic.Count > 0)
-                {
-                    FileUtil.CreateConstClassByDictionary("OtherResPath", rootDir + "/" + constNs + "/" + autoDir,
-                        rootNs + "." + constNs, otherResPathDic);
-                    FileUtil.CreateConstClassByDictionary("OtherResName", rootDir + "/" + constNs + "/" + autoDir,
-                        rootNs + "." + constNs, otherResFileNameDic);
-                    autoClassName.Add("OtherRes");
-                }
-
-                //生成常量工具类
-                if (allResPathDic.Count > 0)
-                {
-                    string content =
-                        "\t\tprivate static readonly System.Collections.Generic.Dictionary<string,string> nameToPath \n" +
-                        "\t\t\t= new System.Collections.Generic.Dictionary<string,string>{\n";
-
-                    foreach (var kv in allResFileNameDic)
-                    {
-                        content += "\t\t\t\t\t{ @\"" + kv.Value + "\" , @\"" + allResPathDic[kv.Key] + "\" },\n";
-                    }
-
-                    content += "\t\t\t\t};\n";
-
-                    content += "\t\tpublic static string GetPath(string resName)\n" +
-                               "\t\t{\n" +
-                               "\t\t\tif (!nameToPath.ContainsKey(resName))\n" +
-                               "\t\t\t\tthrow new System.Exception(\"没有这个资源名：\" + resName);\n" +
-                               "\t\t\treturn nameToPath[resName];\n" +
-                               "\t\t}\n";
-
-                    FileUtil.CreateClassFile("ConstUtil",
-                        rootNs + ".Utility",
-                        rootDir + "/Utility/" + autoDir,
-                        helpTips: "这个类提供了Resources下文件名和路径字典访问方式，同名资源可能引起bug",
-                        fileContent: content,
-                        autoOverwrite: true);
-                }
-
-                #endregion
-
-
-                #region 特殊类的生成
-
-                if (autoClassName.Contains("Panel"))
-                    CreatePanelFile(Application.dataPath + "/Resources/ClassPanel", viewNs, constNs, rootNs, autoDir);
-
-                #endregion
+//                #region 遍历Resources生成常量文件
+//
+//                autoClassName.Clear();
+//                otherResPathDic.Clear();
+//                otherResFileNameDic.Clear();
+//                allResPathDic.Clear();
+//                allResFileNameDic.Clear();
+//
+//
+//                foreach (var fullName in Directory.GetFileSystemEntries(resourceDir))
+//                {
+//                    Debug.Log(fullName);
+//                    if (Directory.Exists(fullName))
+//                    {
+//                        //如果是文件夹
+//                        OprateDir(new DirectoryInfo(fullName), rootNs, constNs, autoDir);
+//                    }
+//                    else
+//                    {
+//                        //是文件
+//                        OprateFile(new FileInfo(fullName));
+//                    }
+//                }
+//
+//                //生成其他常量文件
+//                if (otherResPathDic.Count > 0)
+//                {
+//                    FileUtil.CreateConstClassByDictionary("OtherResPath", rootDir + "/" + constNs + "/" + autoDir,
+//                        rootNs + "." + constNs, otherResPathDic);
+//                    FileUtil.CreateConstClassByDictionary("OtherResName", rootDir + "/" + constNs + "/" + autoDir,
+//                        rootNs + "." + constNs, otherResFileNameDic);
+//                    autoClassName.Add("OtherRes");
+//                }
+//
+//                //生成常量工具类
+//                if (allResPathDic.Count > 0)
+//                {
+//                    string content =
+//                        "\t\tprivate static readonly System.Collections.Generic.Dictionary<string,string> nameToPath \n" +
+//                        "\t\t\t= new System.Collections.Generic.Dictionary<string,string>{\n";
+//
+//                    foreach (var kv in allResFileNameDic)
+//                    {
+//                        content += "\t\t\t\t\t{ @\"" + kv.Value + "\" , @\"" + allResPathDic[kv.Key] + "\" },\n";
+//                    }
+//
+//                    content += "\t\t\t\t};\n";
+//
+//                    content += "\t\tpublic static string GetPath(string resName)\n" +
+//                               "\t\t{\n" +
+//                               "\t\t\tif (!nameToPath.ContainsKey(resName))\n" +
+//                               "\t\t\t\tthrow new System.Exception(\"没有这个资源名：\" + resName);\n" +
+//                               "\t\t\treturn nameToPath[resName];\n" +
+//                               "\t\t}\n";
+//
+//                    FileUtil.CreateClassFile("ConstUtil",
+//                        rootNs + ".Utility",
+//                        rootDir + "/Utility/" + autoDir,
+//                        helpTips: "这个类提供了Resources下文件名和路径字典访问方式，同名资源可能引起bug",
+//                        fileContent: content,
+//                        autoOverwrite: true);
+//                }
+//
+//                #endregion
+//
+//
+//                #region 特殊类的生成
+//
+//                if (autoClassName.Contains("Panel"))
+//                    CreatePanelFile(Application.dataPath + "/Resources/ClassPanel", viewNs, constNs, rootNs, autoDir);
+//
+//                #endregion
 
 
                 #region 定向生成特殊小文件
@@ -282,24 +288,30 @@ namespace ReadyGamerOne.EditorExtension
             var stream = new StreamWriter(autoPartPath);
 
             stream.Write("using ReadyGamerOne.Script;\n");
+            if(_resourceManagerType==ResourceManagerType.AssetBundle)
+                stream.Write("using "+rootNs+"."+constNs+";\n");
 
-            if (createPathDataClass)
-            {
-                stream.Write("using ReadyGamerOne.MemorySystem;\n" +
-                             "using " + rootNs + "." + constNs + ";\n");
-            }
+            stream.Write("using ReadyGamerOne.MemorySystem;\n");
+            
 
             stream.Write("namespace " + rootNs + "." + scriptNs + "\n" +
                          "{\n" +
                          "\tpublic partial class " + fileName + " : AbstractGameMgr<" + fileName + ">\n" +
                          "\t{\n");
 
-            if (createPathDataClass)
+            switch (_resourceManagerType)
             {
-                stream.Write("\t\tprivate IHotUpdatePath _pathData;\n" +
-                             "\t\tprotected override IHotUpdatePath PathData => HotUpdatePathData.Instance;\n"+
-                             "\t\tprotected override IOriginPathData OriginBundleData => OriginBundleConst.Instance;\n");
+                case ResourceManagerType.Resource:
+                    stream.Write("\t\tprotected override IResourceLoader ResourceLoader => ResourcesResourceLoader.Instance;\n" +
+                                 "\t\tprotected override IAssetConstUtil AssetConstUtil => Utility.AssetConstUtil.Instance;\n");
+                    break;
+                case ResourceManagerType.AssetBundle:      
+                    stream.Write("\t\tprotected override IResourceLoader ResourceLoader => AssetBundleResourceLoader.Instance;\n" +
+                                 "\t\tprotected override IHotUpdatePath PathData => HotUpdatePathData.Instance;\n"+
+                                 "\t\tprotected override IOriginAssetBundleUtil OriginBundleData => OriginBundleUtil.Instance;\n");
+                    break;
             }
+
 
 
             stream.Write("\t\tpartial void OnSafeAwake();\n");

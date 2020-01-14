@@ -1,3 +1,0 @@
-﻿resName,uiText,hp,attack,skill_1,skill_2,skill_3,attackRadius,detectRadius,dropExp,dropCoin
-string,string,int,int,string,string,string,float,float,int,int
-Vagrant,性感水母,2100,7,Vagrant_1,Vagrant_2,Vagrant_3,120,120,100,100

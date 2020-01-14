@@ -20,26 +20,51 @@ namespace ReadyGamerOne.MemorySystem
         Func<string,string,string> GetServeBundlePath { get; }
         Func<string,string,string> GetLocalBundlePath { get; }
     }
+    
+    #region IOriginAssetBundleUtil
 
-    public interface IOriginPathData
+    public interface IOriginAssetBundleUtil
     {
         Dictionary<string, string> KeyToName { get; }
         Dictionary<string, string> KeyToPath { get; }
         Dictionary<string,string> NameToPath { get; }
-    }
-    
-    public class OriginBundleKey
-    {
-        public const string Self = @"Self";
-    }
-    
-    public class OriginBundleConst<T>:
+    }    
+
+    public class OriginBundleUtil<T>:
         Singleton<T>,
-        IOriginPathData
-        where T :OriginBundleConst<T>,new()
+        IOriginAssetBundleUtil
+        where T :OriginBundleUtil<T>,new()
     {
         public virtual Dictionary<string, string> KeyToName => null;
         public virtual Dictionary<string, string> KeyToPath => null;
         public virtual Dictionary<string, string> NameToPath => null;
     }
+    #endregion
+    
+    #region IAssetConstUtil
+
+    public class AssetConstUtil<T> :
+        Singleton<T>,
+        IAssetConstUtil
+        where T :AssetConstUtil<T>, new()
+    {
+        public virtual Dictionary<string, string> NameToPath
+        {
+            get { throw new Exception("就不该走到这里"); }
+        }
+    }
+    public interface IAssetConstUtil
+    {
+        Dictionary<string,string> NameToPath { get; }
+    }
+    
+    #endregion
+    
+    public class OriginBundleKey
+    {
+        public const string Self = @"Self";
+        public const string Audio = @"Audio";
+        public const string File = @"File";
+    }
+    
 }

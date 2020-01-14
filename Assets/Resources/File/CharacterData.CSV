@@ -1,0 +1,8 @@
+﻿characterName,m1skill,m2skill,shiftskill,rskill,iconName
+string,string,string,string,string,string
+Engineer,Engineer_M1,Engineer_M2,Engineer_Shift,Engineer_R,EngineerIcon
+Loader,Loader_M1,Loader_M2,Loader_Shift,Loader_R,LoaderIcon
+Merc,Merc_M1,Merc_M2,Merc_Shift,Merc_R,MercIcon
+Robot,Robot_M1,Robot_M2,Robot_Shift,Robot_R,RobotIcon
+Treebot,Treebot_M1,Treebot_M2,Treebot_Shift,Treebot_R,TreebotIcon
+Elline,Elline_M1,Elline_M2,Elline_Shift,Elline_R,EllineIcon

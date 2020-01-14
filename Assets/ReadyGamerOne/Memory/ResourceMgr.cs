@@ -19,6 +19,12 @@ using UnityEditor;
 
 namespace ReadyGamerOne.MemorySystem
 {
+    public enum ResourceManagerType
+         {
+             Resource,
+             AssetBundle
+         }
+
     /// <summary>
     /// 这个类提供关于内存的优化和管理
     /// 1、所有资源只会从Resources目录加载一次，再取的时候会从这个类的字典中取，尤其是一些预制体，经常频繁加载，使用这个类封装的Instantiate方法可以很好地解决这个问题
@@ -33,162 +39,51 @@ namespace ReadyGamerOne.MemorySystem
     {
         #region Fields
 
-        private static AssetBundleLoader assetBundleLoader;
-        private static IHotUpdatePath pather;
-        private static IOriginPathData originBundleConst;
+        private static IResourceLoader _resourceLoader;
 
-        public static void Init(IHotUpdatePath pather, IOriginPathData originConstData)
+        public static void Init(IResourceLoader resourceLoader, IHotUpdatePath pather,
+            IOriginAssetBundleUtil originConstData, IAssetConstUtil assetConstUtil)
         {
-            if (null == pather)
-                return;
-            if (null == originConstData)
-                return;
-            ResourceMgr.originBundleConst = originConstData;
-            ResourceMgr.pather = pather;
-            assetBundleLoader = new AssetBundleLoader();
-            MainLoop.Instance.StartCoroutine(assetBundleLoader.StartBundleManager(pather, originConstData));
+//            Debug.Log(assetConstUtil.GetType().FullName);
+            Assert.IsNotNull(resourceLoader);
+            _resourceLoader = resourceLoader;
+            _resourceLoader.Init(pather, originConstData, assetConstUtil);
         }
 
         #endregion
 
+        /// <summary>
+        /// 显示调试信息
+        /// </summary>
         public static void ShowDebugInfo()
         {
-            Debug.Log("《AssetBundle加载情况》\n" + assetBundleLoader.DebugInfo());
+            var abl = _resourceLoader as AssetBundleResourceLoader;
+            abl?.ShowDebugInfo();
         }
 
-        #region Resources
 
-        #region Private
-
-        private static Dictionary<string, Object> sourceObjectDic;
-
-        private static Dictionary<string, Object> SourceObjects
+        public static T GetAsset<T>(string objKey, string bundleName = null)
+            where T : UnityEngine.Object
         {
-            get
-            {
-                if (sourceObjectDic == null)
-                    sourceObjectDic = new Dictionary<string, Object>();
-
-                return sourceObjectDic;
-            }
-            set { sourceObjectDic = value; }
+            return _resourceLoader.GetAsset<T>(objKey, bundleName);
         }
 
-        /// <summary>
-        /// 从缓存中获取资源，否则采用默认方式初始化
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="defaultGetMethod"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        private static T GetSourceFromCache<T>(string key, Func<string, T> defaultGetMethod = null)
-            where T : Object
+        public static IEnumerator GetAssetAsync<T>(string objName, string bundleKey = null, Action<T> onGetObj = null)
+            where T : UnityEngine.Object
         {
-            if (SourceObjects.ContainsKey(key))
-            {
-                if (SourceObjects[key] == null)
-                    throw new Exception("资源已经释放，但字典中引用亦然保留");
-
-                var ans = SourceObjects[key] as T;
-                if (ans == null)
-                    Debug.LogWarning("资源引用存在，但类型转化失败，小心bug");
-
-                return ans;
-            }
-
-            if (null == defaultGetMethod)
-            {
-                Debug.LogWarning("defaultGetMethod is null");
-                return null;
-            }
-
-            var source = defaultGetMethod(key);
-            if (source == null)
-            {
-                Debug.LogError("资源加载错误，错误路径：" + key);
-                return null;
-            }
-
-            SourceObjects.Add(key, source);
-            return source;
+            yield return _resourceLoader.GetAssetAsync<T>(objName, bundleKey, onGetObj);
         }
 
-        #endregion
-
-
-        /// <summary>
-        /// 根据路径获取资源引用，如果原来加载过，不会重复加载
-        /// </summary>
-        /// <param name="path"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public static T GetSourceFromResources<T>(string path) where T : Object
-        {
-            return GetSourceFromCache(path, Resources.Load<T>);
-        }
-
-        /// <summary>
-        /// 释放通过Resources.Load方法加载来的对象
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="sourceObj"></param>
-        /// <typeparam name="T"></typeparam>
-        public static void ReleaseSourceFromResources<T>(string path, ref T sourceObj) where T : Object
-        {
-            if (!SourceObjects.ContainsKey(path))
-            {
-                Debug.LogWarning("资源字典中并不包含这个路径，注意路径是否错误：" + path);
-                return;
-            }
-
-            var ans = SourceObjects[path] as T;
-            if (ans == null)
-            {
-                Debug.LogWarning("该资源路径下Object转化为null，注意路径是否错误：" + path);
-            }
-
-            SourceObjects.Remove(path);
-            Resources.UnloadAsset(ans);
-            sourceObj = null;
-        }
-
-        public static void ReleaseSourceFromResources<T>(ref T sourceObj) where T : Object
-        {
-            if (!SourceObjects.ContainsValue(sourceObj))
-            {
-                Debug.LogWarning("资源字典中没有这个值，你真的没搞错？");
-                return;
-            }
-
-            var list = new List<string>();
-            foreach (var data in SourceObjects)
-                if (data.Value == sourceObj)
-                {
-                    Resources.UnloadAsset(data.Value);
-                    list.Add(data.Key);
-                }
-
-            foreach (var s in list)
-            {
-                SourceObjects.Remove(s);
-            }
-
-            list = null;
-
-
-            sourceObj = null;
-        }
 
         /// <summary>
         /// 释放游离资源
         /// </summary>
         public static void ReleaseUnusedAssets()
         {
-            SourceObjects.Clear();
+            _resourceLoader.ClearCache();
             Resources.UnloadUnusedAssets();
         }
+
 
         /// <summary>
         /// 根据路径实例化对象
@@ -196,9 +91,9 @@ namespace ReadyGamerOne.MemorySystem
         /// <param name="path"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T Instantiate<T>(string path) where T : Object
+        public static T Instantiate<T>(string objName) where T : Object
         {
-            return Object.Instantiate(GetSourceFromResources<T>(path));
+            return Object.Instantiate(_resourceLoader.GetAsset<T>(objName, OriginBundleKey.Self));
         }
 
         /// <summary>
@@ -207,26 +102,26 @@ namespace ReadyGamerOne.MemorySystem
         /// <param name="path"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public static GameObject InstantiateGameObject(string path, Transform parent = null)
+        public static GameObject InstantiateGameObject(string objName, Transform parent = null)
         {
-            var source = GetSourceFromResources<GameObject>(path);
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
             Assert.IsTrue(source);
             return Object.Instantiate(source, parent);
         }
 
-        public static GameObject InstantiateGameObject(string path, Vector3 pos, Quaternion quaternion,
+        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Quaternion quaternion,
             Transform parent = null)
         {
-            var source = GetSourceFromResources<GameObject>(path);
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
             Assert.IsTrue(source);
-            return Object.Instantiate(source, pos, quaternion, parent);
+            return Object.Instantiate(source, worldPos, quaternion, parent);
         }
 
-        public static GameObject InstantiateGameObject(string path, Vector3 pos, Transform parent = null)
+        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Transform parent = null)
         {
-            var source = GetSourceFromResources<GameObject>(path);
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
             Assert.IsTrue(source);
-            return Object.Instantiate(source, pos, Quaternion.identity, parent);
+            return Object.Instantiate(source, worldPos, Quaternion.identity, parent);
         }
 
 
@@ -247,7 +142,7 @@ namespace ReadyGamerOne.MemorySystem
             {
                 string assetName = fieldInfo.GetValue(null) as string;
 
-                var res = GetSourceFromResources<TAssetType>(dirPath + assetName);
+                var res = _resourceLoader.GetAsset<TAssetType>(dirPath + assetName);
 
                 if (onLoadAsset == null)
                     throw new Exception("onLoadAsset为 null, 那你加载资源干啥？？ ");
@@ -255,10 +150,6 @@ namespace ReadyGamerOne.MemorySystem
                 onLoadAsset.Invoke(assetName, res);
             }
         }
-
-        #endregion
-
-        #region AssetBundle
 
         /// <summary>
         /// 异步从本地读取AssetBundle
@@ -288,97 +179,15 @@ namespace ReadyGamerOne.MemorySystem
             return AssetBundle.LoadFromFile(filePath, crc, offset);
         }
 
-
-        /// <summary>
-        /// 异步从streaming加载物体并使用，优先使用缓存
-        /// </summary>
-        /// <param name="bundleName"></param>
-        /// <param name="objName"></param>
-        /// <param name="onGetObj"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static IEnumerator GetAssetFromBundleAsync<T>(string bundleName, string objName, Action<T> onGetObj)
-            where T : Object
-        {
-            if (null == pather)
-                throw new Exception("没有初始化MemoryMgr.Pather");
-
-            Assert.IsNotNull(onGetObj);
-
-            //如果缓存中有，就直接使用缓存
-            var temp = GetSourceFromCache<T>($"{bundleName}_{objName}");
-            if (null != temp)
-            {
-                onGetObj(temp);
-                yield break;
-            }
-
-            //缓存没有，使用加载器加载
-            yield return assetBundleLoader.GetBundleAsync(bundleName,
-                ab => GetAssetFormBundleAsync(ab, objName, onGetObj));
-
-            IEnumerator GetAssetFormBundleAsync(AssetBundle assetBundle, string _objName, Action<T> _onGetObj)
-            {
-                var objRequest = assetBundle.LoadAssetAsync<T>(_objName);
-                yield return objRequest;
-
-                //添加到缓存
-                var ans = objRequest.asset as T;
-                if (null == ans)
-                    throw new Exception("Get Asset is null");
-                SourceObjects.Add($"{bundleName}_{objName}", ans);
-
-                //使用物品
-                _onGetObj((T) objRequest.asset);
-            }
-        }
-
-        /// <summary>
-        /// 同步加载Self资源，优先使用缓存
-        /// </summary>
-        /// <param name="objKey"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public static T GetAssetFromStreaming<T>(string objKey)
-            where T : Object
-        {
-            return GetAssetFromBundle<T>(OriginBundleKey.Self, objKey);
-        }
-
-        /// <summary>
-        /// 同步加载资源，优先使用缓存
-        /// </summary>
-        /// <param name="bundleNameKey"></param>
-        /// <param name="objKey"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public static T GetAssetFromBundle<T>(string bundleNameKey, string objKey)
-            where T : Object
-        {
-            if (null == pather)
-                throw new Exception("没有初始化MemoryMgr.Pather");
-
-            if (originBundleConst == null)
-                throw new Exception("originBundleConst is null");
-
-
-            return GetSourceFromCache(objKey,
-                key =>
-                {
-                    var ab = assetBundleLoader.GetBundle(bundleNameKey);
-                    Assert.IsTrue(ab);
-                    return ab.LoadAsset<T>(key);
-                });
-        }
-
-        #endregion
-
         #region IEditorTools
 
 #if UNITY_EDITOR
-        static string Title = "AssetBundle打包";
+        static string Title = "资源管理";
+
+        private static ResourceManagerType _resourceManagerType = ResourceManagerType.Resource;
+       
+        #region AssetBundle_Auto_Generate
+
         private static string assetToBundleDir = "未设置";
         private static string outputDir = "未设置";
         private static BuildAssetBundleOptions assetBundleOptions = 0;
@@ -391,142 +200,262 @@ namespace ReadyGamerOne.MemorySystem
 
         private static string streamingAbName = "self";
         private static bool useWeb = false;
-        private static List<string> assetBundleNames = new List<string>();
-//        private static List<string> _assetNames = new List<string>();
+        private static List<string> assetBundleNames = new List<string>();        
+
+        #endregion
+
+        #region Resources_Auto_Generate
+
+        private static List<string> autoClassName = new List<string>();
+        private static Dictionary<string, string> otherResPathDic = new Dictionary<string, string>();
+        private static Dictionary<string, string> otherResFileNameDic = new Dictionary<string, string>();
+
+        private static Dictionary<string, string> allResPathDic = new Dictionary<string, string>();
+        private static Dictionary<string, string> allResFileNameDic = new Dictionary<string, string>();
+
+        #endregion
 
         static void OnToolsGUI(string rootNs, string viewNs, string constNs, string dataNs, string autoDir,
             string scriptDir)
         {
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("打包目录", assetToBundleDir);
-            if (GUILayout.Button("设置要打包的目录"))
+            _resourceManagerType = (ResourceManagerType) EditorGUILayout.EnumPopup("资源加载类型", _resourceManagerType);
+
+            switch (_resourceManagerType)
             {
-                assetToBundleDir = EditorUtility.OpenFolderPanel("选择需要打包的目录", Application.dataPath, "");
-            }
+                #region ResourceManagerType.Resource
 
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("输出目录", outputDir);
-            if (GUILayout.Button("设置输出目录"))
-            {
-                outputDir = EditorUtility.OpenFolderPanel("选择输出目录", Application.dataPath, "");
-            }
+                case ResourceManagerType.Resource:
 
-            EditorGUILayout.Space();
-            assetBundleOptions = (BuildAssetBundleOptions) EditorGUILayout.EnumFlagsField("打包选项", assetBundleOptions);
-
-            buildTarget = (BuildTarget) EditorGUILayout.EnumPopup("目标平台", buildTarget);
-            clearOutputDir = EditorGUILayout.Toggle("清空生成目录", clearOutputDir);
-            EditorGUILayout.Space();
-
-            useForRuntime = EditorGUILayout.Foldout(useForRuntime, "使用用于生成运行时直接使用的AB包");
-            if (useForRuntime)
-            {
-                EditorGUILayout.LabelField("生成HotUpdatePath.cs路径",
-                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir + "/HotUpdatePath.cs");
-                useWeb = EditorGUILayout.Toggle("是否使用网络", useWeb);
-                EditorGUILayout.LabelField("游戏自身AB包名字", streamingAbName);
-
-                EditorGUILayout.Space();
-                if (GUILayout.Button("重新生成常量类【会覆盖】"))
-                {
-                    if (!outputDir.Contains(Application.streamingAssetsPath))
+                    EditorGUILayout.LabelField("自动常量文件生成目录",
+                        Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir);
+                    EditorGUILayout.LabelField("常量工具类生成目录",
+                        Application.dataPath + "/" + rootNs + "/Utility/" + autoDir + "/ConstUtil.cs");
+                    EditorGUILayout.Space();
+                    if (GUILayout.Button("生成常量"))
                     {
-                        Debug.LogError("运行时使用的AB包必须在StreamingAssets目录下");
-                        return;
-                    }
+                        #region 遍历Resources生成常量文件
 
-                    if (assetBundleNames.Count == 0)
-                    {
-                        Debug.LogError("AB包数组未空");
-                        return;
-                    }
-
-                    CreatePathDataClass(rootNs, constNs, autoDir, assetBundleNames);
-                    AssetDatabase.Refresh();
-                    Debug.Log("生成完成");
-                }
-            }
+                        var resourceDir = Application.dataPath + "/Resources";
+                        var rootDir = Application.dataPath + "/" + rootNs;
+                        
+                        autoClassName.Clear();
+                        otherResPathDic.Clear();
+                        otherResFileNameDic.Clear();
+                        allResPathDic.Clear();
+                        allResFileNameDic.Clear();
 
 
-            if (GUILayout.Button("开始打包", GUILayout.Height(3 * EditorGUIUtility.singleLineHeight)))
-            {
-                if (createPathDataClass)
-                {
-                    if (!outputDir.Contains(Application.streamingAssetsPath))
-                    {
-                        Debug.LogError("运行时使用的AB包必须在StreamingAssets目录下");
-                        return;
-                    }
-                }
-                if (assetBundleNames.Count != 0)
-                    assetBundleNames.Clear();
-                if (!Directory.Exists(assetToBundleDir))
-                {
-                    Debug.LogError("打包目录设置异常");
-                    return;
-                }
-
-                if (!Directory.Exists(outputDir))
-                {
-                    Debug.LogError("输出目录设置异常");
-                    return;
-                }
-
-                if (clearOutputDir)
-                {
-                    if (Directory.Exists(outputDir))
-                    {
-                        //获取指定路径下所有文件夹
-                        string[] folderPaths = Directory.GetDirectories(outputDir);
-
-                        foreach (string folderPath in folderPaths)
-                            Directory.Delete(folderPath, true);
-                        //获取指定路径下所有文件
-                        string[] filePaths = Directory.GetFiles(outputDir);
-
-                        foreach (string filePath in filePaths)
-                            File.Delete(filePath);
-                    }
-                }
-
-                var builds = new List<AssetBundleBuild>();
-                foreach (var dirPath in System.IO.Directory.GetDirectories(assetToBundleDir))
-                {
-                    var dirName = new DirectoryInfo(dirPath).Name;
-                    var paths = new List<string>();
-                    var assetNames = new List<string>();
-                    FileUtil.SearchDirectory(dirPath,
-                        fileInfo =>
+                        foreach (var fullName in Directory.GetFileSystemEntries(resourceDir))
                         {
-                            if (fileInfo.Name.EndsWith(".meta"))
-                                return;
-                            assetNames.Add(Path.GetFileNameWithoutExtension(fileInfo.FullName));
-                            var fileLoadPath = fileInfo.FullName.Replace("\\", "/")
-                                .Replace(Application.dataPath, "Assets");
-                            var ai = AssetImporter.GetAtPath(fileLoadPath);
-                            ai.assetBundleName = dirName;
-                            paths.Add(fileLoadPath);
-                        }, true);
+//                            Debug.Log(fullName);
+                            if (Directory.Exists(fullName))
+                            {
+                                //如果是文件夹
+                                OprateDir(new DirectoryInfo(fullName), rootNs, constNs, autoDir);
+                            }
+                            else
+                            {
+                                //是文件
+                                OprateFile(new FileInfo(fullName));
+                            }
+                        }
 
-                    assetBundleNames.Add(dirName);
-                    FileUtil.CreateConstClassByDictionary(
-                        dirName+"Name",
-                        Application.dataPath+"/"+rootNs+"/"+constNs,
-                        rootNs+"."+constNs,
-                        assetNames.ToDictionary(name=>name));
-                    builds.Add(new AssetBundleBuild
+                        //生成其他常量文件
+                        if (otherResPathDic.Count > 0)
+                        {
+                            Debug.Log("创建文件OtherResPath");
+                            FileUtil.CreateConstClassByDictionary("OtherResPath",
+                                rootDir + "/" + constNs + "/" + autoDir,
+                                rootNs + "." + constNs, otherResPathDic);
+                            FileUtil.CreateConstClassByDictionary("OtherResName",
+                                rootDir + "/" + constNs + "/" + autoDir,
+                                rootNs + "." + constNs, otherResFileNameDic);
+                            autoClassName.Add("OtherRes");
+                        }
+
+                        //生成常量工具类
+                        if (allResPathDic.Count > 0)
+                        {
+                            var content =
+                                "\t\tprivate System.Collections.Generic.Dictionary<string,string> nameToPath \n" +
+                                "\t\t\t= new System.Collections.Generic.Dictionary<string,string>{\n";
+
+                            foreach (var kv in allResFileNameDic)
+                            {
+                                content += "\t\t\t\t\t{ @\"" + kv.Value + "\" , @\"" + allResPathDic[kv.Key] +
+                                           "\" },\n";
+                            }
+
+                            content += "\t\t\t\t};\n";
+
+                            content +=
+                                "\t\tpublic override System.Collections.Generic.Dictionary<string,string> NameToPath => nameToPath;\n";
+
+                            FileUtil.CreateClassFile("AssetConstUtil",
+                                rootNs + ".Utility",
+                                rootDir + "/Utility/" + autoDir,
+                                parentClass:"ReadyGamerOne.MemorySystem.AssetConstUtil<AssetConstUtil>",
+                                helpTips: "这个类提供了Resources下文件名和路径字典访问方式，同名资源可能引起bug",
+                                fileContent: content,
+                                autoOverwrite: true);
+                        }
+
+                        
+                        AssetDatabase.Refresh();
+                        Debug.Log("生成结束");
+                        #endregion
+                    }
+
+                    break;
+
+                #endregion
+
+
+                #region ResourceManagerType.AssetBundle
+
+                case ResourceManagerType.AssetBundle:
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("打包目录", assetToBundleDir);
+                    if (GUILayout.Button("设置要打包的目录"))
                     {
-                        assetNames = paths.ToArray(),
-                        assetBundleName = dirName
-                    });
-                }
-                if (createPathDataClass)
-                {
-                    CreatePathDataClass(rootNs, constNs, autoDir, assetBundleNames);
-                }
-                BuildPipeline.BuildAssetBundles(outputDir, builds.ToArray(), assetBundleOptions, buildTarget);
-                AssetDatabase.Refresh();
-                Debug.Log("打包完成");
+                        assetToBundleDir = EditorUtility.OpenFolderPanel("选择需要打包的目录", Application.dataPath, "");
+                    }
+
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("输出目录", outputDir);
+                    if (GUILayout.Button("设置输出目录"))
+                    {
+                        outputDir = EditorUtility.OpenFolderPanel("选择输出目录", Application.dataPath, "");
+                    }
+
+                    EditorGUILayout.Space();
+                    assetBundleOptions =
+                        (BuildAssetBundleOptions) EditorGUILayout.EnumFlagsField("打包选项", assetBundleOptions);
+
+                    buildTarget = (BuildTarget) EditorGUILayout.EnumPopup("目标平台", buildTarget);
+                    clearOutputDir = EditorGUILayout.Toggle("清空生成目录", clearOutputDir);
+                    EditorGUILayout.Space();
+
+                    useForRuntime = EditorGUILayout.Foldout(useForRuntime, "使用用于生成运行时直接使用的AB包");
+                    if (useForRuntime)
+                    {
+                        EditorGUILayout.LabelField("生成HotUpdatePath.cs路径",
+                            Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir + "/HotUpdatePath.cs");
+                        useWeb = EditorGUILayout.Toggle("是否使用网络", useWeb);
+                        EditorGUILayout.LabelField("游戏自身AB包名字", streamingAbName);
+
+                        EditorGUILayout.Space();
+                        if (GUILayout.Button("重新生成常量类【会覆盖】"))
+                        {
+                            if (!outputDir.Contains(Application.streamingAssetsPath))
+                            {
+                                Debug.LogError("运行时使用的AB包必须在StreamingAssets目录下");
+                                return;
+                            }
+
+                            if (assetBundleNames.Count == 0)
+                            {
+                                Debug.LogError("AB包数组未空");
+                                return;
+                            }
+
+                            CreatePathDataClass(rootNs, constNs, autoDir, assetBundleNames);
+                            AssetDatabase.Refresh();
+                            Debug.Log("生成完成");
+                        }
+                    }
+
+
+                    if (GUILayout.Button("开始打包", GUILayout.Height(3 * EditorGUIUtility.singleLineHeight)))
+                    {
+                        if (createPathDataClass)
+                        {
+                            if (!outputDir.Contains(Application.streamingAssetsPath))
+                            {
+                                Debug.LogError("运行时使用的AB包必须在StreamingAssets目录下");
+                                return;
+                            }
+                        }
+
+                        if (assetBundleNames.Count != 0)
+                            assetBundleNames.Clear();
+                        if (!Directory.Exists(assetToBundleDir))
+                        {
+                            Debug.LogError("打包目录设置异常");
+                            return;
+                        }
+
+                        if (!Directory.Exists(outputDir))
+                        {
+                            Debug.LogError("输出目录设置异常");
+                            return;
+                        }
+
+                        if (clearOutputDir)
+                        {
+                            if (Directory.Exists(outputDir))
+                            {
+                                //获取指定路径下所有文件夹
+                                string[] folderPaths = Directory.GetDirectories(outputDir);
+
+                                foreach (string folderPath in folderPaths)
+                                    Directory.Delete(folderPath, true);
+                                //获取指定路径下所有文件
+                                string[] filePaths = Directory.GetFiles(outputDir);
+
+                                foreach (string filePath in filePaths)
+                                    File.Delete(filePath);
+                            }
+                        }
+
+                        var builds = new List<AssetBundleBuild>();
+                        foreach (var dirPath in System.IO.Directory.GetDirectories(assetToBundleDir))
+                        {
+                            var dirName = new DirectoryInfo(dirPath).Name;
+                            var paths = new List<string>();
+                            var assetNames = new List<string>();
+                            FileUtil.SearchDirectory(dirPath,
+                                fileInfo =>
+                                {
+                                    if (fileInfo.Name.EndsWith(".meta"))
+                                        return;
+                                    var pureName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                                    assetNames.Add(pureName);
+                                    var fileLoadPath = fileInfo.FullName.Replace("\\", "/")
+                                        .Replace(Application.dataPath, "Assets");
+                                    var ai = AssetImporter.GetAtPath(fileLoadPath);
+                                    ai.assetBundleName = dirName;
+                                    paths.Add(fileLoadPath);
+                                }, true);
+
+                            assetBundleNames.Add(dirName);
+                            FileUtil.CreateConstClassByDictionary(
+                                dirName + "Name",
+                                Application.dataPath + "/" + rootNs + "/" + constNs,
+                                rootNs + "." + constNs,
+                                assetNames.ToDictionary(name => name));
+                            builds.Add(new AssetBundleBuild
+                            {
+                                assetNames = paths.ToArray(),
+                                assetBundleName = dirName
+                            });
+                        }
+
+                        if (createPathDataClass)
+                        {
+                            CreatePathDataClass(rootNs, constNs, autoDir, assetBundleNames);
+                        }
+
+
+                        BuildPipeline.BuildAssetBundles(outputDir, builds.ToArray(), assetBundleOptions, buildTarget);
+                        AssetDatabase.Refresh();
+                        Debug.Log("打包完成");
+                    }
+
+                    break;
+
+                #endregion
             }
         }
 
@@ -560,9 +489,9 @@ namespace ReadyGamerOne.MemorySystem
 
             #endregion
 
-            #region OriginBundleConst
+            #region OriginBundleUtil
 
-            otherClassBody += "\n\tpublic class OriginBundleConst : OriginBundleConst<OriginBundleConst>\n" +
+            otherClassBody += "\n\tpublic class OriginBundleUtil : OriginBundleUtil<OriginBundleUtil>\n" +
                               "\t{\n";
 
             #region KeyToName
@@ -678,6 +607,113 @@ namespace ReadyGamerOne.MemorySystem
                 otherClassBody: otherClassBody);
         }
 
+        /// <summary>
+        /// 遍历Resources目录的时候操作文件的函数
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        private static void OprateFile(FileInfo fileInfo)
+        {
+            if (fileInfo.FullName.EndsWith(".meta"))
+            {
+                Debug.Log("跳过。meta");
+                return;
+            }
+
+            var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
+                .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
+            var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+            var varName = FileUtil.FileNameToVarName(fileName);
+
+            if (allResPathDic.ContainsKey(varName))
+            {
+                Debug.LogWarning("相同Key: " + varName);
+                Debug.LogWarning("已存：" + allResPathDic[varName]);
+                Debug.LogWarning("现在：" + loadPath);
+            }
+            else
+            {
+                Debug.Log("添加了");
+                allResPathDic.Add(varName, loadPath);
+                allResFileNameDic.Add(varName, fileName);
+
+                otherResPathDic.Add(varName, loadPath);
+                otherResFileNameDic.Add(varName, fileName);
+            }
+        }
+
+        /// <summary>
+        /// 遍历Resources目录时，操作目录的函数
+        /// </summary>
+        /// <param name="dirInfo"></param>
+        /// <param name="rootNs"></param>
+        /// <param name="constNs"></param>
+        /// <param name="autoDir"></param>
+        private static bool OprateDir(DirectoryInfo dirInfo, string rootNs, string constNs, string autoDir)
+        {
+//            Debug.Log(dirInfo.FullName);
+            var dirName = dirInfo.FullName.GetAfterLastChar('\\');
+
+            if (dirName == "Resources")
+                return true;
+
+//            Debug.Log("operateDir: " + dirName);
+            if (dirName.StartsWith("Global"))
+                return false;
+            if (dirName.StartsWith("Class"))
+            {
+                autoClassName.Add(dirName.GetAfterSubstring("Class"));
+
+                FileUtil.ReCreateFileNameConstClassFromDir(
+                    dirName.GetAfterSubstring("Class") + "Path",
+                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
+                    dirInfo.FullName,
+                    rootNs + "." + constNs,
+                    (fileInfo, stream) =>
+                    {
+                        if (!fileInfo.FullName.EndsWith(".meta"))
+                        {
+                            var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                            var varName = FileUtil.FileNameToVarName(fileName);
+                            var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
+                                .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
+                            stream.Write("\t\tpublic const string " + varName + " = @\"" + loadPath + "\";\n");
+                        }
+                    }, true);
+
+                var className = dirName.GetAfterSubstring("Class") + "Name";
+                FileUtil.ReCreateFileNameConstClassFromDir(
+                    className,
+                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
+                    dirInfo.FullName,
+                    rootNs + "." + constNs,
+                    (fileInfo, stream) =>
+                    {
+                        if (!fileInfo.FullName.EndsWith(".meta"))
+                        {
+                            var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                            var varName = FileUtil.FileNameToVarName(fileName);
+                            var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
+                                .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
+
+                            if (allResPathDic.ContainsKey(varName))
+                            {
+                                Debug.LogWarning("出现同名资源文件：" + fileInfo);
+                            }
+                            else
+                            {
+                                allResPathDic.Add(varName, loadPath);
+                                allResFileNameDic.Add(varName, fileName);
+                            }
+
+                            stream.Write("\t\tpublic const string " + varName + " = @\"" + fileName + "\";\n");
+                        }
+                    }, true);
+            }
+            else
+                FileUtil.SearchDirectory(dirInfo.FullName, OprateFile,true);
+
+            return true;
+        }
 
 #endif
 

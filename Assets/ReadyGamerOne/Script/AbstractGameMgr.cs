@@ -19,15 +19,16 @@ namespace ReadyGamerOne.Script
             {
                 base.Awake();
                 print("AbstractGameMgr_Awake——这句话应该只显示一次");
-
-                ResourceMgr.Init(PathData,OriginBundleData);
+                ResourceMgr.Init(ResourceLoader,PathData,OriginBundleData,AssetConstUtil);
                 RegisterSceneEvent();
                 WorkForOnlyOnce();
                 AutoGenerateTool.RegisterUi(GetType());                
             }
         }
+        protected abstract IResourceLoader ResourceLoader { get; }
+        protected virtual IAssetConstUtil AssetConstUtil => null;
         protected virtual IHotUpdatePath PathData => null;
-        protected virtual IOriginPathData OriginBundleData => null;
+        protected virtual IOriginAssetBundleUtil OriginBundleData => null;
 
         protected virtual void RegisterSceneEvent()
         {
