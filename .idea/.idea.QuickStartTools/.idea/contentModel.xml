@@ -8,60 +8,23 @@
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
-        <e p="Plugins" t="Include">
-          <e p="AssetBundles-Browser-1.7.0" t="Include">
-            <e p="Editor" t="Include">
-              <e p="AssetBundleBrowserMain.cs" t="Include" />
-              <e p="AssetBundleBuildTab.cs" t="Include" />
-              <e p="AssetBundleDataSource" t="Include">
-                <e p="ABDataSource.cs" t="Include" />
-                <e p="ABDataSourceProvider.cs" t="Include" />
-                <e p="AssetDatabaseABDataSource.cs" t="Include" />
-              </e>
-              <e p="AssetBundleManageTab.cs" t="Include" />
-              <e p="AssetBundleModel" t="Include">
-                <e p="ABModel.cs" t="Include" />
-                <e p="ABModelAssetInfo.cs" t="Include" />
-                <e p="ABModelBundleInfo.cs" t="Include" />
-              </e>
-              <e p="AssetBundleTree.cs" t="Include" />
-              <e p="AssetListTree.cs" t="Include" />
-              <e p="BundleDetailList.cs" t="Include" />
-              <e p="InspectTab" t="Include">
-                <e p="AssetBundleInspectTab.cs" t="Include" />
-                <e p="AssetBundleRecord.cs" t="Include" />
-                <e p="InspectSingleBundle.cs" t="Include" />
-                <e p="InspectTreeView.cs" t="Include" />
-              </e>
-              <e p="MessageList.cs" t="Include" />
-              <e p="MessageSystem.cs" t="Include" />
-              <e p="Unity.AssetBundleBrowser.Editor.asmdef" t="Include" />
-            </e>
-            <e p="Tests" t="Include">
-              <e p="Editor" t="Include">
-                <e p="ABModelTests.cs" t="Include" />
-                <e p="AssetBundleRecordTests.cs" t="Include" />
-                <e p="Unity.AssetBundleBrowser.Editor.Tests.asmdef" t="Include" />
-                <e p="Util" t="Include">
-                  <e p="ABModelUtil.cs" t="Include" />
-                  <e p="TestUtil.cs" t="Include" />
-                </e>
-              </e>
-            </e>
-          </e>
-        </e>
         <e p="Preview" t="Include">
           <e p="Const" t="Include">
             <e p="AudioName.cs" t="Include" />
             <e p="Auto" t="Include">
               <e p="OtherResName.cs" t="Include" />
               <e p="OtherResPath.cs" t="Include" />
+              <e p="SceneName.cs" t="Include" />
             </e>
             <e p="FileName.cs" t="Include" />
             <e p="GlobalAssetsName.cs" t="Include" />
             <e p="HotUpdatePathData.cs" t="Include" />
+            <e p="Message.cs" t="Include" />
             <e p="PrefabName.cs" t="Include" />
             <e p="TextureName.cs" t="Include" />
+          </e>
+          <e p="Global" t="Include">
+            <e p="GlobalVar.cs" t="Include" />
           </e>
           <e p="Script" t="Include">
             <e p="Auto" t="Include">
@@ -307,8 +270,6 @@
       <e p="Packages" t="ExcludeRecursive" />
       <e p="QuickStartTools.sln" t="IncludeFlat" />
       <e p="Temp\bin" t="ExcludeRecursive" />
-      <e p="Unity.AssetBundleBrowser.Editor.csproj" t="IncludeRecursive" />
-      <e p="Unity.AssetBundleBrowser.Editor.Tests.csproj" t="IncludeRecursive" />
     </e>
   </component>
 </project>

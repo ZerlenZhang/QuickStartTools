@@ -428,7 +428,7 @@ namespace ReadyGamerOne.EditorExtension
         /// <param name="fileInfo"></param>
         private static void OprateFile(FileInfo fileInfo)
         {
-            Debug.Log(fileInfo.FullName);
+//            Debug.Log(fileInfo.FullName);
             if (fileInfo.FullName.EndsWith(".meta"))
             {
 //                Debug.Log("跳过。meta");

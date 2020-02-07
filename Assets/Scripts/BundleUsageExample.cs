@@ -21,7 +21,7 @@ public class BundleUsageExample : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
         {
-            var obj = ResourceMgr.GetAsset<GameObject>(OtherResName.TestImage, OriginBundleKey.Prefab);
+            var obj = ResourceMgr.GetAsset<GameObject>(OtherResName.TestImage,OriginBundleKey.Prefab);
             AudioMgr.Instance.PlayBgm(OtherResName.Scene_1);
             var itemObj = Instantiate(obj, transform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());

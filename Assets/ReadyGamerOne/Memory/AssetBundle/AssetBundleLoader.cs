@@ -121,6 +121,10 @@ namespace ReadyGamerOne.MemorySystem
         /// <exception cref="Exception"></exception>
         internal AssetBundle GetBundle(string bundleNameKey)
         {
+            if (string.IsNullOrEmpty(bundleNameKey))
+            {
+                throw new Exception("Ab包Key不得为空");
+            }
             Assert.IsNotNull(_originAssetBundleUtil);
             
             var bundleName = _originAssetBundleUtil.KeyToName[bundleNameKey];
@@ -144,15 +148,15 @@ namespace ReadyGamerOne.MemorySystem
         /// <param name="bundle"></param>
         void OnAddAssetBundle(AssetBundle bundle)
         {
-            var assets = bundle.LoadAllAssets();
-            foreach (var asset in assets)
-            {
-                Debug.Log(asset.ToString());
-            }
+//            var assets = bundle.LoadAllAssets();
+//            foreach (var asset in assets)
+//            {
+//                Debug.Log(asset.ToString());
+//            }
 
             if (!HeldedBundles.ContainsKey(bundle.name))
             {
-                Debug.Log("Add  " + bundle.name);
+//                Debug.Log("Add  " + bundle.name);
                 HeldedBundles.Add(bundle.name, new BundleUsageInfo(bundle));
             }
         }
@@ -306,7 +310,7 @@ namespace ReadyGamerOne.MemorySystem
                     var ab = AssetBundle.LoadFromFile(bundlePath);
                     onLoadEveryComplete(ab);
                 }
-                catch (KeyNotFoundException e)
+                catch (KeyNotFoundException)
                 {
                     throw new Exception("没有这个BundleName " + bundlePath);
                 }
@@ -357,7 +361,7 @@ namespace ReadyGamerOne.MemorySystem
             private IEnumerator ExecuteLoadBundleAsync(string path, BundleLoadMethod streamMethod,
                 BundleContainer container)
             {
-                Debug.Log(streamMethod);
+//                Debug.Log(streamMethod);
                 switch (streamMethod)
                 {
                     case BundleLoadMethod.WWW_LoadBundleAndBytes:

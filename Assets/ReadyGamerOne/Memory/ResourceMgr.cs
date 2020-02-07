@@ -19,6 +19,9 @@ using UnityEditor;
 
 namespace ReadyGamerOne.MemorySystem
 {
+    
+    
+#pragma warning disable CS0414
     public enum ResourceManagerType
          {
              Resource,
@@ -267,7 +270,7 @@ namespace ReadyGamerOne.MemorySystem
                         //生成其他常量文件
                         if (otherResPathDic.Count > 0)
                         {
-                            Debug.Log("创建文件OtherResPath");
+//                            Debug.Log("创建文件OtherResPath");
                             FileUtil.CreateConstClassByDictionary("OtherResPath",
                                 rootDir + "/" + constNs + "/" + autoDir,
                                 rootNs + "." + constNs, otherResPathDic);
@@ -498,7 +501,8 @@ namespace ReadyGamerOne.MemorySystem
                               "\t{\n";
             foreach (var name in names)
             {
-                if (name.GetAfterLastChar('/') == "self")
+                var pureName = name.GetAfterLastChar('/');
+                if (pureName == "Audio" || pureName == "File")
                     continue;
                 otherClassBody += "\t\tpublic const string " + name.Trim().GetAfterLastChar('/') + " = " +
                                   "@\"" + name.Trim() + "\";\n";
@@ -634,7 +638,7 @@ namespace ReadyGamerOne.MemorySystem
         {
             if (fileInfo.FullName.EndsWith(".meta"))
             {
-                Debug.Log("跳过。meta");
+//                Debug.Log("跳过。meta");
                 return;
             }
 
@@ -651,7 +655,7 @@ namespace ReadyGamerOne.MemorySystem
             }
             else
             {
-                Debug.Log("添加了");
+//                Debug.Log("添加了");
                 allResPathDic.Add(varName, loadPath);
                 allResFileNameDic.Add(varName, fileName);
 

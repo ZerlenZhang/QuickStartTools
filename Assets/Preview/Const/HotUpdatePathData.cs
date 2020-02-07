@@ -25,8 +25,6 @@ namespace Preview.Const
 
 	public class OriginBundleKey : ReadyGamerOne.MemorySystem.OriginBundleKey
 	{
-		public const string Audio = @"Audio";
-		public const string File = @"File";
 		public const string GlobalAssets = @"GlobalAssets";
 		public const string Prefab = @"Prefab";
 		public const string Texture = @"Texture";
@@ -43,7 +41,6 @@ namespace Preview.Const
 			{"Prefab" , @"prefab"},
 			{"Texture" , @"texture"},
 		};
-		
 		public override Dictionary<string, string> KeyToName => _keyToName;
 		private Dictionary<string,string> _keyToPath = new Dictionary<string,string>
 		{
