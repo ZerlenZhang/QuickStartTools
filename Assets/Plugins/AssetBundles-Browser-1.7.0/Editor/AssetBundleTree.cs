@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor.IMGUI.Controls;
 using System.Linq;
-using System;
 
 
 namespace AssetBundleBrowser

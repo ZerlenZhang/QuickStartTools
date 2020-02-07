@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ReadyGamerOne.Script;
+using ReadyGamerOne.Const;
 using ReadyGamerOne.Utility;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -74,83 +74,8 @@ namespace ReadyGamerOne.MemorySystem
             yield return _resourceLoader.GetAssetAsync<T>(objName, bundleKey, onGetObj);
         }
 
-
-        /// <summary>
-        /// 释放游离资源
-        /// </summary>
-        public static void ReleaseUnusedAssets()
-        {
-            _resourceLoader.ClearCache();
-            Resources.UnloadUnusedAssets();
-        }
-
-
-        /// <summary>
-        /// 根据路径实例化对象
-        /// </summary>
-        /// <param name="path"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T Instantiate<T>(string objName) where T : Object
-        {
-            return Object.Instantiate(_resourceLoader.GetAsset<T>(objName, OriginBundleKey.Self));
-        }
-
-        /// <summary>
-        /// 实例化GameObject
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="parent"></param>
-        /// <returns></returns>
-        public static GameObject InstantiateGameObject(string objName, Transform parent = null)
-        {
-            var source = _resourceLoader.GetAsset<GameObject>(objName);
-            Assert.IsTrue(source);
-            return Object.Instantiate(source, parent);
-        }
-
-        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Quaternion quaternion,
-            Transform parent = null)
-        {
-            var source = _resourceLoader.GetAsset<GameObject>(objName);
-            Assert.IsTrue(source);
-            return Object.Instantiate(source, worldPos, quaternion, parent);
-        }
-
-        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Transform parent = null)
-        {
-            var source = _resourceLoader.GetAsset<GameObject>(objName);
-            Assert.IsTrue(source);
-            return Object.Instantiate(source, worldPos, Quaternion.identity, parent);
-        }
-
-
-        /// <summary>
-        /// 从Resources目录中动态加载指定目录下所有内容
-        /// </summary>
-        /// <param name="nameClassType">目录下所有资源的名字要作为一个静态类的public static 成员，这里传递 这个静态类的Type</param>
-        /// <param name="dirPath">从Resources开始的根目录，比如“Audio/"</param>
-        /// <param name="onLoadAsset">加载资源时调用的委托，不能为空</param>
-        /// <typeparam name="TAssetType">加载资源的类型</typeparam>
-        /// <exception cref="Exception">委托为空会抛异常</exception>
-        public static void LoadAssetFromResourceDir<TAssetType>(Type nameClassType, string dirPath = "",
-            Action<string, TAssetType> onLoadAsset = null)
-            where TAssetType : Object
-        {
-            var infoList = nameClassType.GetFields(BindingFlags.Static | BindingFlags.Public);
-            foreach (var fieldInfo in infoList)
-            {
-                string assetName = fieldInfo.GetValue(null) as string;
-
-                var res = _resourceLoader.GetAsset<TAssetType>(dirPath + assetName);
-
-                if (onLoadAsset == null)
-                    throw new Exception("onLoadAsset为 null, 那你加载资源干啥？？ ");
-
-                onLoadAsset.Invoke(assetName, res);
-            }
-        }
-
+        
+   
         /// <summary>
         /// 异步从本地读取AssetBundle
         /// 条件：1、AB包没有做过任何加密
@@ -177,6 +102,84 @@ namespace ReadyGamerOne.MemorySystem
         public static AssetBundle LoadAssetBundleFromLocal(string filePath, uint crc = 0u, ulong offset = 0ul)
         {
             return AssetBundle.LoadFromFile(filePath, crc, offset);
+        }
+     
+        
+        
+        
+
+        /// <summary>
+        /// 释放游离资源
+        /// </summary>
+        public static void ReleaseUnusedAssets()
+        {
+            _resourceLoader.ClearCache();
+            Resources.UnloadUnusedAssets();
+        }
+
+
+        /// <summary>
+        /// 根据路径实例化对象
+        /// </summary>
+        /// <param name="path"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T Instantiate<T>(string objName) where T : Object
+        {
+            return Object.Instantiate(_resourceLoader.GetAsset<T>(objName, OriginBundleKey.Self));
+        }
+
+        #region 实例化GameObject
+
+        public static GameObject InstantiateGameObject(string objName, Transform parent = null)
+        {
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
+            Assert.IsTrue(source);
+            return Object.Instantiate(source, parent);
+        }
+
+        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Quaternion quaternion,
+            Transform parent = null)
+        {
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
+            Assert.IsTrue(source);
+            return Object.Instantiate(source, worldPos, quaternion, parent);
+        }
+
+        public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Transform parent = null)
+        {
+            var source = _resourceLoader.GetAsset<GameObject>(objName);
+            Assert.IsTrue(source);
+            return Object.Instantiate(source, worldPos, Quaternion.identity, parent);
+        }
+        
+
+        #endregion
+
+        /// <summary>
+        /// 从Resources目录中动态加载指定目录下所有内容
+        /// </summary>
+        /// <param name="nameClassType">目录下所有资源的名字要作为一个静态类的public static 成员，这里传递 这个静态类的Type</param>
+        /// <param name="dirPath">从Resources开始的根目录，比如“Audio/"</param>
+        /// <param name="onLoadAsset">加载资源时调用的委托，不能为空</param>
+        /// <typeparam name="TAssetType">加载资源的类型</typeparam>
+        /// <exception cref="Exception">委托为空会抛异常</exception>
+        public static void LoadAssetFromResourceDir<TAssetType>(Type nameClassType, string dirPath = "",
+            Action<string, TAssetType> onLoadAsset = null)
+            where TAssetType : Object
+        {
+            var infoList = nameClassType.GetFields(BindingFlags.Static | BindingFlags.Public);
+            foreach (var fieldInfo in infoList)
+            {
+                string assetName = fieldInfo.GetValue(null) as string;
+
+                var res = _resourceLoader.GetAsset<TAssetType>(dirPath + assetName);
+
+                if (onLoadAsset == null)
+                    throw new Exception("onLoadAsset为 null, 那你加载资源干啥？？ ");
+
+                onLoadAsset.Invoke(assetName, res);
+            }
         }
 
         #region IEditorTools
@@ -315,6 +318,22 @@ namespace ReadyGamerOne.MemorySystem
                 #region ResourceManagerType.AssetBundle
 
                 case ResourceManagerType.AssetBundle:
+
+                    var newestVersion = PlayerPrefs.GetString(VersionDefine.PrefKey_LocalVersion, "0.0");
+
+                    if (GUILayout.Button("显示本地版本"))
+                    {
+                        var versionData = PlayerPrefs.GetString(newestVersion);
+                        Debug.Log("本地版本号：" + newestVersion + "\n版本信息：" + versionData);
+                    }
+
+                    EditorGUI.BeginChangeCheck();
+                    newestVersion = EditorGUILayout.DelayedTextField("本地版本", newestVersion);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        PlayerPrefs.SetString(VersionDefine.PrefKey_LocalVersion, newestVersion);
+                    }
+                    
                     EditorGUILayout.Space();
                     EditorGUILayout.LabelField("打包目录", assetToBundleDir);
                     if (GUILayout.Button("设置要打包的目录"))

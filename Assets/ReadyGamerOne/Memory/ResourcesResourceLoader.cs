@@ -119,7 +119,7 @@ namespace ReadyGamerOne.MemorySystem
             
             if (!_assetConstUtil.NameToPath.ContainsKey(objName))
             {
-                throw new Exception("没有这个Key ："+objName);
+                throw new Exception("没有这个objectKey ："+objName);
             }
 
             

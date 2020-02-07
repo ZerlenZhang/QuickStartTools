@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ReadyGamerOne.Common
+﻿namespace ReadyGamerOne.Common
 {
 
     // 实现普通的单例模式

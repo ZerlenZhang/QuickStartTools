@@ -24,4 +24,4 @@ ClassTypes:
 Assets:
 - Assets/Resources/Prefab/TestFolder/TestImage.prefab
 Dependencies:
-- F:/Projects/unity/QuickStartTools/Assets/StreamingAssets/RuntimeAB/texture
+- F:/Projects/unity/QuickStartTools/Assets/StreamingAssets/texture

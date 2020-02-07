@@ -11,7 +11,7 @@ namespace Preview.Const
 	/// </summary>
 	public class HotUpdatePathData : Singleton<HotUpdatePathData>, IHotUpdatePath
 	{
-		public string OriginMainManifest => @Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", "RuntimeAB");
+		public string OriginMainManifest => @Path.Combine(Application.streamingAssetsPath + @"", "StreamingAssets");
 		public string LocalMainPath => @Path.Combine(Application.persistentDataPath, "AssetBundles");
 		public string WebServeMainPath => @"file:/C:\Users\ReadyGamerOne\Downloads\webserver";
 		public string WebServeMainManifest => WebServeMainPath + "\\ManifestFile";
@@ -43,25 +43,26 @@ namespace Preview.Const
 			{"Prefab" , @"prefab"},
 			{"Texture" , @"texture"},
 		};
+		
 		public override Dictionary<string, string> KeyToName => _keyToName;
 		private Dictionary<string,string> _keyToPath = new Dictionary<string,string>
 		{
-			{"Self" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"self")},
-			{"Audio" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"audio")},
-			{"File" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"file")},
-			{"GlobalAssets" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"globalassets")},
-			{"Prefab" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"prefab")},
-			{"Texture" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"texture")},
+			{"Self" , Path.Combine(Application.streamingAssetsPath + @"", @"self")},
+			{"Audio" , Path.Combine(Application.streamingAssetsPath + @"", @"audio")},
+			{"File" , Path.Combine(Application.streamingAssetsPath + @"", @"file")},
+			{"GlobalAssets" , Path.Combine(Application.streamingAssetsPath + @"", @"globalassets")},
+			{"Prefab" , Path.Combine(Application.streamingAssetsPath + @"", @"prefab")},
+			{"Texture" , Path.Combine(Application.streamingAssetsPath + @"", @"texture")},
 		};
 		public override Dictionary<string, string> KeyToPath => _keyToPath;
 		private Dictionary<string,string> _nameToPath = new Dictionary<string,string>
 		{
-			{@"self" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"self")},
-			{@"audio" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"audio")},
-			{@"file" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"file")},
-			{@"globalassets" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"globalassets")},
-			{@"prefab" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"prefab")},
-			{@"texture" , Path.Combine(Application.streamingAssetsPath + @"/RuntimeAB", @"texture")},
+			{@"self" , Path.Combine(Application.streamingAssetsPath + @"", @"self")},
+			{@"audio" , Path.Combine(Application.streamingAssetsPath + @"", @"audio")},
+			{@"file" , Path.Combine(Application.streamingAssetsPath + @"", @"file")},
+			{@"globalassets" , Path.Combine(Application.streamingAssetsPath + @"", @"globalassets")},
+			{@"prefab" , Path.Combine(Application.streamingAssetsPath + @"", @"prefab")},
+			{@"texture" , Path.Combine(Application.streamingAssetsPath + @"", @"texture")},
 		};
 		public override Dictionary<string, string> NameToPath => _nameToPath;
 	}

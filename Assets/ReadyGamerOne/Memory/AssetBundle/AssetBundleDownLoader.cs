@@ -51,6 +51,8 @@ namespace ReadyGamerOne.MemorySystem
             yield return ReadServeNewestVersion();
             //比较服务器和当前版本差别
             var differenceConfig = CheckDifference();
+
+            Debug.Log("区别：" + differenceConfig);
             //如果版本检查失败（网络链接异常什么的)
             if (VersionCheckFailed)
             {
@@ -64,12 +66,14 @@ namespace ReadyGamerOne.MemorySystem
             //如果没有区别
             if (differenceConfig == null)
             {
+                Debug.Log("没有区别");
                 //设置同步完成
                 currentLocalVersion = currentServeVersion;
                 IsUpdateToServe = true;
             }
             else
             {
+                Debug.Log("有区别");
                 //如果有区别，就要下载有区别的文件
                 if (differenceConfig.Config.Count != 0)
                 {
@@ -122,10 +126,10 @@ namespace ReadyGamerOne.MemorySystem
                 currentServeVersion = versionMessage;
 
 
-                string NewestServeConfigURL = pather.GetServeConfigPath(versionMessage);
+                var serveConfigURL = pather.GetServeConfigPath(versionMessage);
                 //Debug.Log(NewestServeConfigURL);
                 string serverData = null;
-                yield return FetchMessageFromWeb(NewestServeConfigURL, output => serverData = output);
+                yield return FetchMessageFromWeb(serveConfigURL, output => serverData = output);
                 //Debug.Log(servedata);
                 //记录当前服务器资源结构
                 serveConfig = ResourcesConfig.Create(serverData);
@@ -137,10 +141,9 @@ namespace ReadyGamerOne.MemorySystem
         /// </summary>
         private void ReadLocalCurentVersionData()
         {
-            var newestVersion = PlayerPrefs.GetString(VersionDefine.PrefKey_LocalVersion);
             //记录客户端版本号
-            currentLocalVersion = newestVersion;
-            string versionData = PlayerPrefs.GetString(newestVersion);
+            var newestVersion = PlayerPrefs.GetString(VersionDefine.PrefKey_LocalVersion);
+            var versionData = PlayerPrefs.GetString(newestVersion);
             //记录客户端版本资源结构
             localConfig = ResourcesConfig.Create(versionData);
         }
@@ -194,7 +197,7 @@ namespace ReadyGamerOne.MemorySystem
             currentLocalVersion = currentServeVersion;
             PlayerPrefs.SetString(VersionDefine.PrefKey_LocalVersion, currentLocalVersion);
             PlayerPrefs.SetString(currentLocalVersion, serveConfig.ToString());
-            Debug.Log("DifferenceRemoved And Allthings Done");
+            Debug.Log("所有资源更新已就位");
         }
         
         #endregion

@@ -127,17 +127,20 @@ namespace ReadyGamerOne.MemorySystem
                 throw new Exception("没有初始化MemoryMgr.Pather");
 
             Assert.IsNotNull(onGetObj);
-            Assert.IsTrue(originBundleConst.KeyToName.ContainsKey(bundleKey));
-            
-            var bundleName = originBundleConst.KeyToName[bundleKey];
 
-            //如果缓存中有，就直接使用缓存
-            var temp = GetSourceFromCache<T>($"{bundleName}_{objName}");
-            if (null != temp)
-            {
-                onGetObj(temp);
-                yield break;
+            if (originBundleConst.KeyToName.ContainsKey(bundleKey))
+            {    
+                var bundleName = originBundleConst.KeyToName[bundleKey];
+             
+                //如果缓存中有，就直接使用缓存
+                var temp = GetSourceFromCache<T>($"{bundleName}_{objName}");
+                if (null != temp)
+                {
+                    onGetObj(temp);
+                    yield break;
+                }
             }
+            
 
             //缓存没有，使用加载器加载
             yield return assetBundleLoader.GetBundleAsync(bundleKey,

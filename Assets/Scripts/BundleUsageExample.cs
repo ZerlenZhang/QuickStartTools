@@ -38,8 +38,8 @@ public class BundleUsageExample : MonoBehaviour
         {
             StartCoroutine(
                 ResourceMgr.GetAssetAsync<GameObject>(
-                    ObjectsUsage[0].BundleNames,
                     ObjectsUsage[0].ObjectName,
+                    ObjectsUsage[0].BundleNames,
                     obj => Instantiate(obj)));
         }
     }

@@ -1,4 +1,4 @@
-namespace Preview.Utility
+namespace Test.Utility
 {
 	/// <summary>
 	/// 这个类提供了Resources下文件名和路径字典访问方式，同名资源可能引起bug

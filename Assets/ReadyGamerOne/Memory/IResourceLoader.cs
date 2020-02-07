@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using ReadyGamerOne.Script;
-using UnityEngine;
 
 namespace ReadyGamerOne.MemorySystem
 {

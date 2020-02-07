@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using ReadyGamerOne.Common;
 using ReadyGamerOne.Utility;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Networking;
-using Object = UnityEngine.Object;
 
 namespace ReadyGamerOne.MemorySystem
 {

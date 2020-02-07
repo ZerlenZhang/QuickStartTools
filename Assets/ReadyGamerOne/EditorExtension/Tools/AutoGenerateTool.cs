@@ -38,11 +38,9 @@ namespace ReadyGamerOne.EditorExtension
         private static bool createGameMgr = true;
         private static bool createPanelClasses = true;
 
-        private static bool foldMoreCreate = true;
         private static bool createGlobalVar = false;
         private static bool createMessage = false;
         private static bool createSceneNameClass = false;
-        private static bool createPathDataClass = false;
         private static ResourceManagerType _resourceManagerType;
 
 
@@ -51,13 +49,6 @@ namespace ReadyGamerOne.EditorExtension
         {
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("自动常量文件生成目录",
-                Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir);
-            EditorGUILayout.LabelField("常量工具类生成目录",
-                Application.dataPath + "/" + rootNs + "/Utility/" + autoDir + "/ConstUtil.cs");
-            EditorGUILayout.Space();
-
 
             createPanelClasses = EditorGUILayout.Toggle("是否自动生成Panel类型", createPanelClasses);
             if (createPanelClasses)
@@ -75,23 +66,23 @@ namespace ReadyGamerOne.EditorExtension
             }
             EditorGUILayout.Space();
 
-            foldMoreCreate = EditorGUILayout.Foldout(foldMoreCreate, "更多生成");
-            if (foldMoreCreate)
-            {
+
                 createMessage = EditorGUILayout.Toggle("是否生成空Message常量类", createMessage);
                 if (createMessage)
                     EditorGUILayout.LabelField("生成Message.cs路径",
                         Application.dataPath + "/" + rootNs + "/" + constNs + "/Message.cs");
+                EditorGUILayout.Space();
                 createGlobalVar = EditorGUILayout.Toggle("是否重写GlobalVar类", createGlobalVar);
                 if (createGlobalVar)
                     EditorGUILayout.LabelField("生成GlobalVar.cs路径",
                         Application.dataPath + "/" + rootNs + "/Global/GlobalVar.cs");
+                EditorGUILayout.Space();
                 createSceneNameClass = EditorGUILayout.Toggle("是否生成SceneName类", createSceneNameClass);
                 if (createSceneNameClass)
                     EditorGUILayout.LabelField("生成SceneName.cs路径",
                         Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir + "/SceneName.cs");
-                createPathDataClass = EditorGUILayout.Toggle("是否生成资源陆鲸类用于AB包资源管理", createPathDataClass);
-            }
+                EditorGUILayout.Space();
+            
 
 
             if (GUILayout.Button("开启自动生成", GUILayout.Height(2 * EditorGUIUtility.singleLineHeight)))
@@ -112,79 +103,34 @@ namespace ReadyGamerOne.EditorExtension
 
                 #endregion
 
+                autoClassName.Clear();
+                otherResPathDic.Clear();
+                otherResFileNameDic.Clear();
+                allResPathDic.Clear();
+                allResFileNameDic.Clear();
 
-//                #region 遍历Resources生成常量文件
-//
-//                autoClassName.Clear();
-//                otherResPathDic.Clear();
-//                otherResFileNameDic.Clear();
-//                allResPathDic.Clear();
-//                allResFileNameDic.Clear();
-//
-//
-//                foreach (var fullName in Directory.GetFileSystemEntries(resourceDir))
-//                {
-//                    Debug.Log(fullName);
-//                    if (Directory.Exists(fullName))
-//                    {
-//                        //如果是文件夹
-//                        OprateDir(new DirectoryInfo(fullName), rootNs, constNs, autoDir);
-//                    }
-//                    else
-//                    {
-//                        //是文件
-//                        OprateFile(new FileInfo(fullName));
-//                    }
-//                }
-//
-//                //生成其他常量文件
-//                if (otherResPathDic.Count > 0)
-//                {
-//                    FileUtil.CreateConstClassByDictionary("OtherResPath", rootDir + "/" + constNs + "/" + autoDir,
-//                        rootNs + "." + constNs, otherResPathDic);
-//                    FileUtil.CreateConstClassByDictionary("OtherResName", rootDir + "/" + constNs + "/" + autoDir,
-//                        rootNs + "." + constNs, otherResFileNameDic);
-//                    autoClassName.Add("OtherRes");
-//                }
-//
-//                //生成常量工具类
-//                if (allResPathDic.Count > 0)
-//                {
-//                    string content =
-//                        "\t\tprivate static readonly System.Collections.Generic.Dictionary<string,string> nameToPath \n" +
-//                        "\t\t\t= new System.Collections.Generic.Dictionary<string,string>{\n";
-//
-//                    foreach (var kv in allResFileNameDic)
-//                    {
-//                        content += "\t\t\t\t\t{ @\"" + kv.Value + "\" , @\"" + allResPathDic[kv.Key] + "\" },\n";
-//                    }
-//
-//                    content += "\t\t\t\t};\n";
-//
-//                    content += "\t\tpublic static string GetPath(string resName)\n" +
-//                               "\t\t{\n" +
-//                               "\t\t\tif (!nameToPath.ContainsKey(resName))\n" +
-//                               "\t\t\t\tthrow new System.Exception(\"没有这个资源名：\" + resName);\n" +
-//                               "\t\t\treturn nameToPath[resName];\n" +
-//                               "\t\t}\n";
-//
-//                    FileUtil.CreateClassFile("ConstUtil",
-//                        rootNs + ".Utility",
-//                        rootDir + "/Utility/" + autoDir,
-//                        helpTips: "这个类提供了Resources下文件名和路径字典访问方式，同名资源可能引起bug",
-//                        fileContent: content,
-//                        autoOverwrite: true);
-//                }
-//
-//                #endregion
-//
-//
-//                #region 特殊类的生成
-//
-//                if (autoClassName.Contains("Panel"))
-//                    CreatePanelFile(Application.dataPath + "/Resources/ClassPanel", viewNs, constNs, rootNs, autoDir);
-//
-//                #endregion
+
+                foreach (var fullName in Directory.GetFileSystemEntries(resourceDir))
+                {
+                    if (Directory.Exists(fullName))
+                    {
+                        //如果是文件夹
+                        OprateDir(new DirectoryInfo(fullName));
+                    }
+                    else
+                    {
+                        //是文件
+                        OprateFile(new FileInfo(fullName));
+                    }
+                }
+
+
+                #region 特殊类的生成
+
+                if (createPanelClasses && autoClassName.Contains("Panel"))
+                    CreatePanelFile(Application.dataPath + "/Resources/ClassPanel", viewNs, constNs, rootNs, autoDir);
+
+                #endregion
 
 
                 #region 定向生成特殊小文件
@@ -485,7 +431,7 @@ namespace ReadyGamerOne.EditorExtension
             Debug.Log(fileInfo.FullName);
             if (fileInfo.FullName.EndsWith(".meta"))
             {
-                Debug.Log("跳过。meta");
+//                Debug.Log("跳过。meta");
                 return;
             }
 
@@ -517,45 +463,22 @@ namespace ReadyGamerOne.EditorExtension
         /// <param name="rootNs"></param>
         /// <param name="constNs"></param>
         /// <param name="autoDir"></param>
-        private static bool OprateDir(DirectoryInfo dirInfo, string rootNs, string constNs, string autoDir)
+        private static bool OprateDir(DirectoryInfo dirInfo)
         {
-            Debug.Log(dirInfo.FullName);
             var dirName = dirInfo.FullName.GetAfterLastChar('\\');
 
             if (dirName == "Resources")
                 return true;
 
-            Debug.Log("operateDir: " + dirName);
             if (dirName.StartsWith("Global"))
                 return false;
+            
             if (dirName.StartsWith("Class"))
             {
                 autoClassName.Add(dirName.GetAfterSubstring("Class"));
 
-                FileUtil.ReCreateFileNameConstClassFromDir(
-                    dirName.GetAfterSubstring("Class") + "Path",
-                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
-                    dirInfo.FullName,
-                    rootNs + "." + constNs,
-                    (fileInfo, stream) =>
-                    {
-                        if (!fileInfo.FullName.EndsWith(".meta"))
-                        {
-                            var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-                            var varName = FileUtil.FileNameToVarName(fileName);
-                            var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
-                                .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
-                            stream.Write("\t\tpublic const string " + varName + " = @\"" + loadPath + "\";\n");
-                        }
-                    }, true);
-
-                var className = dirName.GetAfterSubstring("Class") + "Name";
-                FileUtil.ReCreateFileNameConstClassFromDir(
-                    className,
-                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
-                    dirInfo.FullName,
-                    rootNs + "." + constNs,
-                    (fileInfo, stream) =>
+                FileUtil.SearchDirectory(dirInfo.FullName,
+                    fileInfo =>
                     {
                         if (!fileInfo.FullName.EndsWith(".meta"))
                         {
@@ -573,13 +496,9 @@ namespace ReadyGamerOne.EditorExtension
                                 allResPathDic.Add(varName, loadPath);
                                 allResFileNameDic.Add(varName, fileName);
                             }
-
-                            stream.Write("\t\tpublic const string " + varName + " = @\"" + fileName + "\";\n");
                         }
-                    }, true);
+                    },true);
             }
-//            else
-//                FileUtil.SearchDirectory(dirInfo.FullName, OprateFile,true);
 
             return true;
         }

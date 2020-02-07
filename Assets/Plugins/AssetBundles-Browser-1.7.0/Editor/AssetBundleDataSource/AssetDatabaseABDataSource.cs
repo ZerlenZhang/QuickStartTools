@@ -1,10 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using UnityEngine.Assertions;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.IMGUI.Controls;
 
 namespace AssetBundleBrowser.AssetBundleDataSource
 {

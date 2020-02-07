@@ -279,7 +279,28 @@
           </e>
         </e>
         <e p="Test" t="Include">
-          <e p="NewBehaviourScript.cs" t="Include" />
+          <e p="Const" t="Include">
+            <e p="Auto" t="Include">
+              <e p="OtherResName.cs" t="Include" />
+              <e p="OtherResPath.cs" t="Include" />
+              <e p="SceneName.cs" t="Include" />
+            </e>
+            <e p="Message.cs" t="Include" />
+          </e>
+          <e p="Global" t="Include">
+            <e p="GlobalVar.cs" t="Include" />
+          </e>
+          <e p="Script" t="Include">
+            <e p="Auto" t="Include">
+              <e p="TestMgr.cs" t="Include" />
+            </e>
+            <e p="TestMgr.cs" t="Include" />
+          </e>
+          <e p="Utility" t="Include">
+            <e p="Auto" t="Include">
+              <e p="AssetConstUtil.cs" t="Include" />
+            </e>
+          </e>
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />

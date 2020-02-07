@@ -1,8 +1,8 @@
 using ReadyGamerOne.Script;
 using ReadyGamerOne.MemorySystem;
-namespace Preview.Script
+namespace Test.Script
 {
-	public partial class PreviewMgr : AbstractGameMgr<PreviewMgr>
+	public partial class TestMgr : AbstractGameMgr<TestMgr>
 	{
 		protected override IResourceLoader ResourceLoader => ResourcesResourceLoader.Instance;
 		protected override IAssetConstUtil AssetConstUtil => Utility.AssetConstUtil.Instance;

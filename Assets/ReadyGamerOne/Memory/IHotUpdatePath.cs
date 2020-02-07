@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using ReadyGamerOne.Common;
-using UnityEngine;
 
 namespace ReadyGamerOne.MemorySystem
 {
