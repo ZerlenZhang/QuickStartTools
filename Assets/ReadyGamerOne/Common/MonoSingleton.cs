@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 namespace ReadyGamerOne.Common
 {
+    
     /// <summary>
     /// MonoBehavior单例泛型类
     /// </summary>

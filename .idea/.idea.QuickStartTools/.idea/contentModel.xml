@@ -85,7 +85,6 @@
               <e p="MessagetTriggerDrawer.cs" t="Include" />
               <e p="ResourcesPathChooserDrawer.cs" t="Include" />
               <e p="StringChooseDrawer.cs" t="Include" />
-              <e p="StringChooser.cs" t="Include" />
               <e p="TransformPathChooserDrawer.cs" t="Include" />
             </e>
             <e p="MessageTrigger.cs" t="Include" />
@@ -229,11 +228,39 @@
             </e>
           </e>
         </e>
+        <e p="Scripts" t="Include">
+          <e p="TestScript.cs" t="Include" />
+          <e p="TriggerScript.cs" t="Include" />
+        </e>
         <e p="Test" t="Include">
           <e p="Const" t="Include">
             <e p="Auto" t="Include">
-              <e p="OtherResName.cs" t="Include" />
+              <e p="AudioName.cs" t="Include" />
+              <e p="FileName.cs" t="Include" />
+              <e p="PrefabName.cs" t="Include" />
+              <e p="SceneName.cs" t="Include" />
+              <e p="TextureName.cs" t="Include" />
             </e>
+            <e p="Message.cs" t="Include" />
+          </e>
+          <e p="Data" t="Include">
+            <e p="Auto" t="Include">
+              <e p="CharacterData.cs" t="Include" />
+              <e p="EnemyData.cs" t="Include" />
+              <e p="ItemData.cs" t="Include" />
+              <e p="PersonData.cs" t="Include" />
+              <e p="RankData.cs" t="Include" />
+              <e p="ShopItemData.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Global" t="Include">
+            <e p="GlobalVar.cs" t="Include" />
+          </e>
+          <e p="Script" t="Include">
+            <e p="Auto" t="Include">
+              <e p="TestMgr.cs" t="Include" />
+            </e>
+            <e p="TestMgr.cs" t="Include" />
           </e>
           <e p="Utility" t="Include">
             <e p="Auto" t="Include">

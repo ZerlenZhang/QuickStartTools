@@ -158,22 +158,6 @@ namespace ReadyGamerOne.EditorExtension
                 AssetDatabase.Refresh();
                 Debug.Log("生成结束");
             }
-
-            #region 显示生成详情
-
-            EditorGUILayout.Space();
-            if (autoClassName.Count > 0)
-            {
-                var str = "生成的类型有：";
-                foreach (var name in autoClassName)
-                {
-                    str += "\n" + name + "Name" + "\t\t" + name + "Path";
-                }
-
-                EditorGUILayout.HelpBox(str, MessageType.Info);
-            }
-
-            #endregion
         }
 //        foreach (var name in names)
 //        {
@@ -287,13 +271,13 @@ namespace ReadyGamerOne.EditorExtension
             var useAudio = autoClassName.Contains("Audio");
             if (useAudio || usePanel)
             {
-                stream.Write("using ReadyGamerOne.EditorExtension;\n");
-                stream.Write("using " + rootNs + "." + constNs + ";\n");
+                stream.Write("using ReadyGamerOne.EditorExtension;\n" +
+                             "using " + rootNs + "." + constNs + ";\n" +
+                             "using ReadyGamerOne.Script;\n");
             }
 
             if (usePanel)
-                stream.Write("using ReadyGamerOne.View;\n" +
-                             "using ReadyGamerOne.Script;\n");
+                stream.Write("using ReadyGamerOne.View;\n");
 
             stream.Write("namespace " + rootNs + "." + scriptNs + "\n" +
                          "{\n" +
