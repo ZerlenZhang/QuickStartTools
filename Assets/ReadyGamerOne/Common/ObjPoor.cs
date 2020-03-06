@@ -71,4 +71,17 @@ namespace ReadyGamerOne.Common
             objCache.Clear();
         }
     }
+
+    /// <summary>
+    /// 实现Poolable接口物品的对象池
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class PoolableObjectPool<T> :
+        ObjPoor<T>
+        where T : class, IPoolable<T>, new()
+    {
+        public PoolableObjectPool() : base(()=>new T(),obj=>obj.OnRecycleToPool() , obj=>obj.OnGetFromPool())
+        {
+        }
+    }
 }

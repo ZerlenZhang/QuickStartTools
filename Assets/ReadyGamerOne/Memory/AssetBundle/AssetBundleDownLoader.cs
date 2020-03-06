@@ -97,26 +97,7 @@ namespace ReadyGamerOne.MemorySystem
         /// <returns></returns>
         private IEnumerator ReadServeNewestVersion()
         {
-            /// <summary>
-            /// 从服务器获取信息
-            /// </summary>
-            /// <param name="webPath">从哪个网页获取信息</param>
-            /// <param name="outMessage">如何操作获取的信息</param>
-            /// <returns></returns>
-            IEnumerator FetchMessageFromWeb(string webPath, System.Action<string> outMessage)
-            {
-                using (var webRequest = UnityWebRequest.Get(webPath))
-                {
-                    yield return webRequest.SendWebRequest();
-                    var text = webRequest.downloadHandler.text;
-                    outMessage(text);
-                    if (webRequest.isNetworkError || webRequest.isHttpError)
-                    {
-                        VersionCheckFailed = true;
-                        Debug.LogWarning(webRequest.error);
-                    }
-                }
-            }            
+       
             
             string versionMessage = null;
             yield return FetchMessageFromWeb(pather.WebServeVersionPath, output => versionMessage = output);
@@ -135,6 +116,28 @@ namespace ReadyGamerOne.MemorySystem
                 serveConfig = ResourcesConfig.Create(serverData);
             }
         }
+        
+        /// <summary>
+        /// 从服务器获取信息
+        /// </summary>
+        /// <param name="webPath">从哪个网页获取信息</param>
+        /// <param name="outMessage">如何操作获取的信息</param>
+        /// <returns></returns>
+        private IEnumerator FetchMessageFromWeb(string webPath, System.Action<string> outMessage)
+        {
+            using (var webRequest = UnityWebRequest.Get(webPath))
+            {
+                yield return webRequest.SendWebRequest();
+                var text = webRequest.downloadHandler.text;
+                outMessage(text);
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    VersionCheckFailed = true;
+                    Debug.LogWarning(webRequest.error);
+                }
+            }
+        }          
+        
         
         /// <summary>
         /// 读取当前本地客户端版本

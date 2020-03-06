@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ReadyGamerOne.EditorExtension
 {
-#pragma warning disable CS0649
+//#pragma warning disable CS0649
     [Serializable]
     public class TransformPathChooser
     {

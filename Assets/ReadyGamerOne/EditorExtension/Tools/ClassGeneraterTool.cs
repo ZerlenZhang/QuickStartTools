@@ -11,7 +11,7 @@ using UnityEngine;
 namespace ReadyGamerOne.EditorExtension
 {
     
-#pragma warning disable CS0414
+//#pragma warning disable CS0414
 
     public class ClassGeneraterTool
 #if UNITY_EDITOR

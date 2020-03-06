@@ -19,9 +19,6 @@ using UnityEditor;
 
 namespace ReadyGamerOne.MemorySystem
 {
-    
-    
-#pragma warning disable CS0414
     public enum ResourceManagerType
          {
              Resource,
@@ -43,17 +40,32 @@ namespace ReadyGamerOne.MemorySystem
         #region Fields
 
         private static IResourceLoader _resourceLoader;
+        private static IAssetConstUtil _assetConstUtil;
 
         public static void Init(IResourceLoader resourceLoader, IHotUpdatePath pather,
             IOriginAssetBundleUtil originConstData, IAssetConstUtil assetConstUtil)
         {
-//            Debug.Log(assetConstUtil.GetType().FullName);
             Assert.IsNotNull(resourceLoader);
+            Assert.IsNotNull(assetConstUtil);
+            _assetConstUtil = assetConstUtil;
             _resourceLoader = resourceLoader;
+//            Debug.Log("初始化");
             _resourceLoader.Init(pather, originConstData, assetConstUtil);
         }
 
         #endregion
+
+
+        /// <summary>
+        /// 根据objKey获取路径
+        /// </summary>
+        /// <param name="objKey"></param>
+        /// <returns></returns>
+        public string NameToPath(string objKey)
+        {
+            string path = null;
+            return !_assetConstUtil.NameToPath.TryGetValue(objKey, out path) ? null : path;
+        }
 
         /// <summary>
         /// 显示调试信息
@@ -144,6 +156,7 @@ namespace ReadyGamerOne.MemorySystem
         public static GameObject InstantiateGameObject(string objName, Vector3 worldPos, Quaternion quaternion,
             Transform parent = null)
         {
+            Assert.IsNotNull(_resourceLoader);
             var source = _resourceLoader.GetAsset<GameObject>(objName);
             Assert.IsTrue(source);
             return Object.Instantiate(source, worldPos, quaternion, parent);
@@ -219,6 +232,7 @@ namespace ReadyGamerOne.MemorySystem
         private static Dictionary<string, string> allResPathDic = new Dictionary<string, string>();
         private static Dictionary<string, string> allResFileNameDic = new Dictionary<string, string>();
 
+        private static bool createPathFile = false;
         #endregion
 
         static void OnToolsGUI(string rootNs, string viewNs, string constNs, string dataNs, string autoDir,
@@ -238,6 +252,10 @@ namespace ReadyGamerOne.MemorySystem
                     EditorGUILayout.LabelField("常量工具类生成目录",
                         Application.dataPath + "/" + rootNs + "/Utility/" + autoDir + "/ConstUtil.cs");
                     EditorGUILayout.Space();
+
+                    createPathFile = EditorGUILayout.Toggle("是否生成资源路径文件", createPathFile);
+                    EditorGUILayout.Space();
+                    
                     if (GUILayout.Button("生成常量"))
                     {
                         #region 遍历Resources生成常量文件
@@ -686,22 +704,26 @@ namespace ReadyGamerOne.MemorySystem
             {
                 autoClassName.Add(dirName.GetAfterSubstring("Class"));
 
-                FileUtil.ReCreateFileNameConstClassFromDir(
-                    dirName.GetAfterSubstring("Class") + "Path",
-                    Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
-                    dirInfo.FullName,
-                    rootNs + "." + constNs,
-                    (fileInfo, stream) =>
-                    {
-                        if (!fileInfo.FullName.EndsWith(".meta"))
-                        {
-                            var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-                            var varName = FileUtil.FileNameToVarName(fileName);
-                            var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
-                                .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
-                            stream.Write("\t\tpublic const string " + varName + " = @\"" + loadPath + "\";\n");
-                        }
-                    }, true);
+                if (createPathFile)
+                {
+                         FileUtil.ReCreateFileNameConstClassFromDir(
+                             dirName.GetAfterSubstring("Class") + "Path",
+                             Application.dataPath + "/" + rootNs + "/" + constNs + "/" + autoDir,
+                             dirInfo.FullName,
+                             rootNs + "." + constNs,
+                             (fileInfo, stream) =>
+                             {
+                                 if (!fileInfo.FullName.EndsWith(".meta"))
+                                 {
+                                     var fileName = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                                     var varName = FileUtil.FileNameToVarName(fileName);
+                                     var loadPath = fileInfo.FullName.GetAfterSubstring("Resources\\")
+                                         .GetBeforeSubstring(Path.GetExtension(fileInfo.FullName));
+                                     stream.Write("\t\tpublic const string " + varName + " = @\"" + loadPath + "\";\n");
+                                 }
+                             }, true);           
+                }
+
 
                 var className = dirName.GetAfterSubstring("Class") + "Name";
                 FileUtil.ReCreateFileNameConstClassFromDir(

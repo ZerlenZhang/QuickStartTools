@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace ReadyGamerOne.EditorExtension
 {
-#pragma warning disable CS0414
+//#pragma warning disable CS0414
     public class AutoGenerateTool
 #if UNITY_EDITOR
         : IEditorTools
@@ -306,7 +306,7 @@ namespace ReadyGamerOne.EditorExtension
 
             if (useAudio)
             {
-                stream.Write("\t\tpublic StringChooser startBgm = new StringChooser(typeof(AudioPath));\n");
+                stream.Write("\t\tpublic StringChooser startBgm = new StringChooser(typeof(AudioName));\n");
             }
 
             stream.Write("\t\tpartial void OnSafeAwake()\n" +
@@ -382,7 +382,7 @@ namespace ReadyGamerOne.EditorExtension
                              "\n" +
                              "\t\tprotected override void Load()\n" +
                              "\t\t{\n" +
-                             "\t\t\tCreate(PanelPath." + className + ");\n" +
+                             "\t\t\tCreate(PanelName." + className + ");\n" +
                              "\t\t\tOnLoad();\n" +
                              "\t\t}\n" +
                              "\t}\n" +

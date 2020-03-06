@@ -27,10 +27,14 @@ namespace ReadyGamerOne.Common
 
         protected virtual void Awake() {
             DontDestroyOnLoad(this.gameObject);
-            if (_instance == null) {
+            if (_instance == null)
+            {
+//                Debug.Log("赋值全局单例:"+GetType().Name+" " + GetHashCode());
                 _instance = this as T;
             }
-            else {
+            else
+            {
+//                Debug.Log("销毁当前物体：" + GetHashCode());
                 GameObject.Destroy(this.gameObject);
             }
         }

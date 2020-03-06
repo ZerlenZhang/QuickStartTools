@@ -5,6 +5,7 @@
     <e p="C:\Users\ReadyGamerOne\.Rider2019.1\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\ReadyGamerOne\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_QuickStartTools.728435587.00" t="ExcludeRecursive" />
     <e p="F:\Projects\unity\QuickStartTools" t="IncludeRecursive">
+      <e p=".git\info\exclude" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
@@ -69,7 +70,9 @@
           <e p="Common" t="Include">
             <e p="CEventCenter.cs" t="Include" />
             <e p="IHasStringId.cs" t="Include" />
+            <e p="IObjectLifeTime.cs" t="Include" />
             <e p="IPoolable.cs" t="Include" />
+            <e p="IUnityGameObject.cs" t="Include" />
             <e p="MonoSingleton.cs" t="Include" />
             <e p="ObjPoor.cs" t="Include" />
             <e p="SafeSingleton.cs" t="Include" />
@@ -112,6 +115,7 @@
               <e p="MessagetTriggerDrawer.cs" t="Include" />
               <e p="ResourcesPathChooserDrawer.cs" t="Include" />
               <e p="StringChooseDrawer.cs" t="Include" />
+              <e p="StringChooser.cs" t="Include" />
               <e p="TransformPathChooserDrawer.cs" t="Include" />
             </e>
             <e p="MessageTrigger.cs" t="Include" />
@@ -145,6 +149,44 @@
             <e p="ResourcesResourceLoader.cs" t="Include" />
           </e>
           <e p="Model" t="Include">
+            <e p="Rougelike" t="Include">
+              <e p="Agent" t="Include">
+                <e p="IAgent.cs" t="Include" />
+              </e>
+              <e p="Effect" t="Include">
+                <e p="AbstractEffect.cs" t="Include" />
+              </e>
+              <e p="Item" t="Include">
+                <e p="AbstractItemInfo.cs" t="Include" />
+                <e p="IItemablePerson.cs" t="Include" />
+              </e>
+              <e p="Person" t="Include">
+                <e p="Interfaces" t="Include">
+                  <e p="IInteractablePerson.cs" t="Include" />
+                  <e p="IRankablePerson.cs" t="Include" />
+                  <e p="ITakeDamageablePerson.cs" t="Include" />
+                </e>
+                <e p="PersonController" t="Include">
+                  <e p="AbstractCharacterController.cs" t="Include" />
+                  <e p="UsePersonControllerAttribute.cs" t="Include" />
+                </e>
+                <e p="PersonSystem" t="Include">
+                  <e p="AbstractPerson" t="Include">
+                    <e p="AbstractPerson.cs" t="Include" />
+                    <e p="AttackPersonExtension.cs" t="Include" />
+                    <e p="GameObjectExtension.cs" t="Include" />
+                  </e>
+                  <e p="AutoPoolDataPerson" t="Include">
+                    <e p="PoolDataPerson.cs" t="Include" />
+                    <e p="UseCsvDataAttribute.cs" t="Include" />
+                  </e>
+                  <e p="AutoPoolPerson" t="Include">
+                    <e p="PoolPerson.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="PersonTool.cs" t="Include" />
+              </e>
+            </e>
             <e p="SceneSystem" t="Include">
               <e p="AbstractScene.cs" t="Include" />
               <e p="SceneMgr.cs" t="Include" />
@@ -173,14 +215,6 @@
             <e p="PrefItem.cs" t="Include" />
             <e p="PrefUtil.cs" t="Include" />
           </e>
-          <e p="TimeLine" t="Include">
-            <e p="PanelChange" t="Include">
-              <e p="PanelChangeClip.cs" t="Include" />
-              <e p="PanelChangeMixer.cs" t="Include" />
-              <e p="PanelChangeMonobehavior.cs" t="Include" />
-              <e p="PanelChangeTrack.cs" t="Include" />
-            </e>
-          </e>
           <e p="Utility" t="Include">
             <e p="Extensions" t="Include">
               <e p="AlphaExtension.cs" t="Include" />
@@ -206,11 +240,6 @@
             </e>
           </e>
           <e p="View" t="Include">
-            <e p="AssetUi" t="Include">
-              <e p="AbstractUiAsset.cs" t="Include" />
-              <e p="PanelAssetMgr.cs" t="Include" />
-              <e p="PanelUiAsset.cs" t="Include" />
-            </e>
             <e p="PanelSystem" t="Include">
               <e p="AbstractPanel.cs" t="Include" />
               <e p="AbstractUI.cs" t="Include" />
@@ -227,41 +256,6 @@
               </e>
               <e p="IStackPanel.cs" t="Include" />
               <e p="PanelMgr.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="Scripts" t="Include">
-          <e p="BundleUsageExample.cs" t="Include" />
-        </e>
-        <e p="ScrptableTest" t="Include">
-          <e p="ScriptableObjects" t="Include">
-            <e p="TestAsset.cs" t="Include" />
-          </e>
-          <e p="Scripts" t="Include">
-            <e p="GameMgr.cs" t="Include" />
-          </e>
-        </e>
-        <e p="Test" t="Include">
-          <e p="Const" t="Include">
-            <e p="Auto" t="Include">
-              <e p="OtherResName.cs" t="Include" />
-              <e p="OtherResPath.cs" t="Include" />
-              <e p="SceneName.cs" t="Include" />
-            </e>
-            <e p="Message.cs" t="Include" />
-          </e>
-          <e p="Global" t="Include">
-            <e p="GlobalVar.cs" t="Include" />
-          </e>
-          <e p="Script" t="Include">
-            <e p="Auto" t="Include">
-              <e p="TestMgr.cs" t="Include" />
-            </e>
-            <e p="TestMgr.cs" t="Include" />
-          </e>
-          <e p="Utility" t="Include">
-            <e p="Auto" t="Include">
-              <e p="AssetConstUtil.cs" t="Include" />
             </e>
           </e>
         </e>

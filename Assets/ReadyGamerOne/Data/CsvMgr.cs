@@ -24,7 +24,7 @@ namespace ReadyGamerOne.Data
 		{
 			var setT = typeof(T);
 			if (filePath == null) {
-				filePath ="ClassFile/" + setT.Name;
+				filePath =setT.Name;
 			}
 
 			if (!dataDic.ContainsKey(filePath)) {
@@ -72,12 +72,12 @@ namespace ReadyGamerOne.Data
 		{
 			if (null == dataClassType)
 				throw new Exception("数据类为空");
-			if (!dataDic.ContainsKey("ClassFile/" + dataClassType.Name))
+			if (!dataDic.ContainsKey(dataClassType.Name))
 			{
 				ReadConfigData(dataClassType);
 			}
 
-			var objDic = dataDic["ClassFile/" + dataClassType.Name];
+			var objDic = dataDic[dataClassType.Name];
 			if(!objDic.ContainsKey(dataKey))
 				throw new Exception("CsvMgr注册了这个类，但表中没有这个ID:	"+dataKey);
 			return objDic[dataKey];
@@ -94,7 +94,7 @@ namespace ReadyGamerOne.Data
 		{
 			var setT = typeof(T);
 			if (filePath == null) {
-				filePath ="ClassFile/" + setT.Name;
+				filePath =setT.Name;
 			}
 
 			if (!dataDic.ContainsKey(filePath)) {
@@ -120,7 +120,7 @@ namespace ReadyGamerOne.Data
 			var returnList = new List<T> ();
 			var setT = typeof(T);
 			if (filePath == null) {
-				filePath = "ClassFile/" + setT.Name;
+				filePath = setT.Name;
 			}
 
 			if (!dataDic.ContainsKey(filePath))
@@ -139,7 +139,7 @@ namespace ReadyGamerOne.Data
 			var fileLoadPath = filePath;
 			if (string.IsNullOrEmpty(fileLoadPath)||fileLoadPath==type.Name)
 			{
-				fileLoadPath = "ClassFile/" + type.Name;
+				fileLoadPath = type.Name;
 			}
 			
 			string getString = ResourceMgr.GetAsset<TextAsset>(fileLoadPath,OriginBundleKey.File).text;
@@ -166,19 +166,19 @@ namespace ReadyGamerOne.Data
 					object dataItem = new object ();
 					switch (fieldInfos [j].FieldType.ToString ()) {
 						case "System.Single":
-							dataItem = float.Parse(fieldValue);
+							dataItem = string.IsNullOrEmpty(fieldValue) ? default(float) : float.Parse(fieldValue);
 							break;
 						case "System.Int32":
-							dataItem = int.Parse (fieldValue);
+							dataItem = string.IsNullOrEmpty(fieldValue) ? default(int) : int.Parse (fieldValue);
 							break;
 						case "System.Int64":
-							dataItem = long.Parse (fieldValue);
+							dataItem = string.IsNullOrEmpty(fieldValue) ? default(long) : long.Parse (fieldValue);
 							break;
 						case "System.String":
-							dataItem = fieldValue;
+							dataItem = string.IsNullOrEmpty(fieldValue) ? default(string) : fieldValue;
 							break;
 						default:
-							Debug.LogWarning("error data type");
+							Debug.LogWarning("error data type:"+fieldInfos [j].FieldType);
 							break;
 					}
 					

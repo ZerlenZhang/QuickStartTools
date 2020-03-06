@@ -79,39 +79,41 @@ namespace ReadyGamerOne.MemorySystem
             HeldedBundles[bundleName].useTime++;
             yield return getAction(targetBundle);
 
-            IEnumerator AddBundleWithDependenciesAsync(string _bundleName)
-            {
-                //如果已经加载过，就无需在加载
-                if (HeldedBundles.ContainsKey(_bundleName))
-                {
-                    yield break;
-                }
 
-                //获取依赖
-                var dependences = manifestReader.GetBundleDependencies(_bundleName);
-
-                //如果没有依赖，直接加载自己，然后返回
-                if (null == dependences)
-                {
-                    yield return loadLoaderTool.LoadFileAsync(_bundleName);
-                    yield break;
-                }
-
-                //如果有依赖，逐个添加依赖
-                foreach (var dependence in dependences)
-                {
-                    //添加依赖，保证已经加载这个依赖
-                    yield return AddBundleWithDependenciesAsync(dependence);
-
-                    //添加一次依赖
-                    HeldedBundles[dependence].useTime++;
-                }
-
-                //如果有依赖，添加完依赖后，最后添加自己，这样，无论有没有以来，最后都会连自己都添加了
-                yield return loadLoaderTool.LoadFileAsync(_bundleName);
-            }
         }
+        private IEnumerator AddBundleWithDependenciesAsync(string _bundleName)
+        {
+            //如果已经加载过，就无需在加载
+            if (HeldedBundles.ContainsKey(_bundleName))
+            {
+                yield break;
+            }
 
+            //获取依赖
+            var dependences = manifestReader.GetBundleDependencies(_bundleName);
+
+            //如果没有依赖，直接加载自己，然后返回
+            if (null == dependences)
+            {
+                yield return loadLoaderTool.LoadFileAsync(_bundleName);
+                yield break;
+            }
+
+            //如果有依赖，逐个添加依赖
+            foreach (var dependence in dependences)
+            {
+                //添加依赖，保证已经加载这个依赖
+                yield return AddBundleWithDependenciesAsync(dependence);
+
+                //添加一次依赖
+                HeldedBundles[dependence].useTime++;
+            }
+
+            //如果有依赖，添加完依赖后，最后添加自己，这样，无论有没有以来，最后都会连自己都添加了
+            yield return loadLoaderTool.LoadFileAsync(_bundleName);
+        }
+        
+        
         /// <summary>
         /// 同步加载一个没有依赖的AB包，优先从缓存获取，顺利调用会使对应AB包引用计数加一
         /// </summary>

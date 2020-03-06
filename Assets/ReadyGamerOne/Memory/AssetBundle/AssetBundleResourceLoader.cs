@@ -146,25 +146,26 @@ namespace ReadyGamerOne.MemorySystem
             yield return assetBundleLoader.GetBundleAsync(bundleKey,
                 ab => GetAssetFormBundleAsync(ab, objName, onGetObj));
 
-            IEnumerator GetAssetFormBundleAsync(AssetBundle assetBundle, string _objName, Action<T> _onGetObj)
-            {
-                var objRequest = assetBundle.LoadAssetAsync<T>(_objName);
-                yield return objRequest;
 
-                //添加到缓存
-                var ans = objRequest.asset as T;
-                if (null == ans)
-                    throw new Exception("Get Asset is null");
-                SourceObjects.Add($"{assetBundle.name}_{_objName}", ans);
-
-                var asset = (T) objRequest.asset;
-                Assert.IsNotNull(asset);
-                //使用物品
-                _onGetObj(asset);
-            }
 
         }
+        private IEnumerator GetAssetFormBundleAsync<T>(AssetBundle assetBundle, string _objName, Action<T> _onGetObj)
+            where T : Object
+        {
+            var objRequest = assetBundle.LoadAssetAsync<T>(_objName);
+            yield return objRequest;
 
+            //添加到缓存
+            var ans = objRequest.asset as T;
+            if (null == ans)
+                throw new Exception("Get Asset is null");
+            SourceObjects.Add($"{assetBundle.name}_{_objName}", ans);
+
+            var asset = (T) objRequest.asset;
+            Assert.IsNotNull(asset);
+            //使用物品
+            _onGetObj(asset);
+        }
         public void ClearCache()
         {
             SourceObjects.Clear();
