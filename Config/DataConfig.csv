@@ -1,0 +1,12 @@
+﻿ItemData,,itemName,uitext,spriteName,prefabName,statement,maxSlotCount
+className,parentClassName,string,string,string,string,string,int
+ShopItemData,ItemData,price,outPrice,,,,
+className,parentClassName,int,int,,,,
+PersonData,,personName,hitback_x,hitback_y,,,
+className,parentClassName,string,float,float,,,
+CharacterData,PersonData,,,,,,
+className,parentClassName,,,,,,
+EnemyData,PersonData,defaultConstTime,maxHp,attack,,,
+className,parentClassName,float,int,int,,,
+RankData,,level,maxExp,rankName,limit,bloodC,attackC
+className,parentClassName,int,int,string,string,int,int

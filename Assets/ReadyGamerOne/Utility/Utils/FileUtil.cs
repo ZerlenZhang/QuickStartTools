@@ -250,6 +250,8 @@ namespace ReadyGamerOne.Utility
         /// <param name="deepSearch">是否递归搜索</param>
         public static void ReCreateFileNameConstClassFromDir(string className, string generateDir,string dirWhichContainsFiles, string nameSpace,Action<FileInfo,StreamWriter> onOperateFile=null,bool deepSearch=false)
         {
+            if (!Directory.Exists(generateDir))
+                Directory.CreateDirectory(generateDir);
             var classFilePath = generateDir + "/"+className+".cs";
             if(File.Exists(classFilePath))
                 File.Delete(classFilePath);

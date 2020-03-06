@@ -1,0 +1,4 @@
+﻿itemName,uitext,spriteName,prefabName,statement,maxSlotCount,price,outPrice
+string,string,string,string,string,int,int,int
+LittleBoy,小门徒,LittleBoy,,奔跑时释放追踪幽魂,2,20,10
+GoldHeart,黄金心脏,GoldHeart,,传送时间内召唤Boss助战,2,40,20

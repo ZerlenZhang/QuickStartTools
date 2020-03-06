@@ -289,9 +289,10 @@ namespace ReadyGamerOne.MemorySystem
                         if (otherResPathDic.Count > 0)
                         {
 //                            Debug.Log("创建文件OtherResPath");
-                            FileUtil.CreateConstClassByDictionary("OtherResPath",
-                                rootDir + "/" + constNs + "/" + autoDir,
-                                rootNs + "." + constNs, otherResPathDic);
+                            if(createPathFile)
+                                FileUtil.CreateConstClassByDictionary("OtherResPath",
+                                    rootDir + "/" + constNs + "/" + autoDir,
+                                    rootNs + "." + constNs, otherResPathDic);
                             FileUtil.CreateConstClassByDictionary("OtherResName",
                                 rootDir + "/" + constNs + "/" + autoDir,
                                 rootNs + "." + constNs, otherResFileNameDic);

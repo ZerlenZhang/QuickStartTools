@@ -9,36 +9,6 @@
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
-        <e p="Preview" t="Include">
-          <e p="Const" t="Include">
-            <e p="AudioName.cs" t="Include" />
-            <e p="Auto" t="Include">
-              <e p="OtherResName.cs" t="Include" />
-              <e p="OtherResPath.cs" t="Include" />
-              <e p="SceneName.cs" t="Include" />
-            </e>
-            <e p="FileName.cs" t="Include" />
-            <e p="GlobalAssetsName.cs" t="Include" />
-            <e p="HotUpdatePathData.cs" t="Include" />
-            <e p="Message.cs" t="Include" />
-            <e p="PrefabName.cs" t="Include" />
-            <e p="TextureName.cs" t="Include" />
-          </e>
-          <e p="Global" t="Include">
-            <e p="GlobalVar.cs" t="Include" />
-          </e>
-          <e p="Script" t="Include">
-            <e p="Auto" t="Include">
-              <e p="PreviewMgr.cs" t="Include" />
-            </e>
-            <e p="PreviewMgr.cs" t="Include" />
-          </e>
-          <e p="Utility" t="Include">
-            <e p="Auto" t="Include">
-              <e p="AssetConstUtil.cs" t="Include" />
-            </e>
-          </e>
-        </e>
         <e p="ReadyGamerOne" t="Include">
           <e p="Algorithm" t="Include">
             <e p="Algorithm.cs" t="Include" />
@@ -256,6 +226,18 @@
               </e>
               <e p="IStackPanel.cs" t="Include" />
               <e p="PanelMgr.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Test" t="Include">
+          <e p="Const" t="Include">
+            <e p="Auto" t="Include">
+              <e p="OtherResName.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Utility" t="Include">
+            <e p="Auto" t="Include">
+              <e p="AssetConstUtil.cs" t="Include" />
             </e>
           </e>
         </e>
